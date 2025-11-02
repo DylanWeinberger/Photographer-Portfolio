@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // Allow images from Sanity CDN
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
