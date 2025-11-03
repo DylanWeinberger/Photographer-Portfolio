@@ -1,4 +1,5 @@
 import { client } from '@/sanity/lib/client'
+import { allPhotosQuery } from '@/lib/queries'
 import type { Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
 
@@ -7,28 +8,13 @@ import PhotoGrid from '@/components/PhotoGrid'
  *
  * Fetches photos from Sanity CMS and displays them in a grid.
  * Uses Next.js 15 Server Components for data fetching.
+ *
+ * Query imported from lib/queries.ts for centralized maintenance.
  */
-
-// GROQ query to fetch photos with all needed fields
-const PHOTOS_QUERY = `*[_type == "photo"] | order(featured desc, _createdAt desc) {
-  _id,
-  _type,
-  _createdAt,
-  title,
-  image,
-  altText,
-  caption,
-  displayQuality,
-  watermarkEnabled,
-  featured,
-  tags,
-  takenAt,
-  location
-}`
 
 async function getPhotos(): Promise<Photo[]> {
   try {
-    const photos = await client.fetch<Photo[]>(PHOTOS_QUERY, {}, {
+    const photos = await client.fetch<Photo[]>(allPhotosQuery, {}, {
       // Cache for 60 seconds, then revalidate in background
       next: { revalidate: 60 }
     })

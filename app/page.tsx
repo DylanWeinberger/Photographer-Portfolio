@@ -1,4 +1,5 @@
 import { client } from '@/sanity/lib/client'
+import { homepageQuery, featuredPhotosQuery } from '@/lib/queries'
 import type { Homepage, Photo } from '@/types/sanity'
 
 /**
@@ -14,69 +15,21 @@ import type { Homepage, Photo } from '@/types/sanity'
  */
 
 /**
- * GROQ Query for Homepage Document
+ * DATA FETCHING
  *
- * Breaking down this query:
- * - *[_type == "homepage"] - Get all documents of type "homepage"
- * - [0] - Get the first one (homepage is a singleton, only one exists)
- * - {...} - Project/select specific fields we need
- * - heroPhotos[]-> - The []-> syntax "dereferences" the photo references
- *                    This means instead of getting just IDs, we get full photo objects
+ * Queries are imported from lib/queries.ts for:
+ * - Reusability across multiple pages
+ * - Centralized maintenance
+ * - Better syntax highlighting with groq template literal
+ * - Consistent query formatting
  */
-const HOMEPAGE_QUERY = `*[_type == "homepage"][0] {
-  _id,
-  _type,
-  hero {
-    headline,
-    subheadline,
-    heroPhotos[]-> {
-      _id,
-      title,
-      image,
-      altText,
-      displayQuality,
-      watermarkEnabled
-    },
-    showCTA,
-    ctaText,
-    ctaLink
-  },
-  featuredSection {
-    heading,
-    description
-  },
-  about {
-    heading,
-    bio,
-    profileImage
-  }
-}`
-
-/**
- * GROQ Query for Featured Photos
- *
- * Breaking down this query:
- * - *[_type == "photo" && featured == true] - Get all photos where featured is true
- * - | order(_createdAt desc) - Sort by creation date, newest first
- * - [0...6] - Get first 6 results (array slice from index 0 to 6)
- * - {...} - Select specific fields we need
- */
-const FEATURED_PHOTOS_QUERY = `*[_type == "photo" && featured == true] | order(_createdAt desc) [0...6] {
-  _id,
-  title,
-  image,
-  altText,
-  displayQuality,
-  watermarkEnabled,
-  featured
-}`
 
 /**
  * Fetch homepage data from Sanity
  */
 async function getHomepage(): Promise<Homepage | null> {
   try {
-    const homepage = await client.fetch<Homepage>(HOMEPAGE_QUERY, {}, {
+    const homepage = await client.fetch<Homepage>(homepageQuery, {}, {
       // Revalidate every 60 seconds in production
       next: { revalidate: 60 }
     })
@@ -92,7 +45,7 @@ async function getHomepage(): Promise<Homepage | null> {
  */
 async function getFeaturedPhotos(): Promise<Photo[]> {
   try {
-    const photos = await client.fetch<Photo[]>(FEATURED_PHOTOS_QUERY, {}, {
+    const photos = await client.fetch<Photo[]>(featuredPhotosQuery, {}, {
       next: { revalidate: 60 }
     })
     return photos

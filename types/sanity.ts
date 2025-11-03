@@ -120,3 +120,53 @@ export interface Homepage {
     profileImage: SanityImage
   }
 }
+
+/**
+ * Navigation Document Type
+ *
+ * Singleton document that contains the main navigation menu.
+ * Menu items can link to internal pages, external URLs, or home.
+ */
+export interface Navigation {
+  _id: string
+  _type: 'navigation'
+  title: string
+  menuItems: MenuItem[]
+}
+
+// Individual menu item in navigation
+export interface MenuItem {
+  _key: string
+  label: string
+  linkType: 'home' | 'internal' | 'external'
+  internalLink?: string
+  externalUrl?: string
+  openInNewTab?: boolean
+}
+
+/**
+ * Settings Document Type
+ *
+ * Singleton document that contains site-wide configuration.
+ * Includes branding, social links, and footer settings.
+ */
+export interface Settings {
+  _id: string
+  _type: 'settings'
+  siteTitle: string
+  siteDescription?: string
+  logo?: SanityImage & {
+    alt: string
+  }
+  socialLinks?: {
+    instagram?: string
+    facebook?: string
+    twitter?: string
+    email?: string
+  }
+  footer?: {
+    copyrightText?: string
+    additionalText?: string
+    showSocialLinks: boolean
+  }
+}
