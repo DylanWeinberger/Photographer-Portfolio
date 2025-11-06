@@ -8,6 +8,7 @@ import { getThumbnailUrl, getBlurDataURL } from '@/lib/imageBuilder'
 interface ProtectedImageProps {
   photo: Photo
   priority?: boolean
+  onClick?: () => void
 }
 
 /**
@@ -20,7 +21,7 @@ interface ProtectedImageProps {
  *
  * Uses Next.js Image component for automatic optimization.
  */
-export default function ProtectedImage({ photo, priority = false }: ProtectedImageProps) {
+export default function ProtectedImage({ photo, priority = false, onClick }: ProtectedImageProps) {
   const [showWarning, setShowWarning] = useState(false)
 
   // Handle right-click attempts
@@ -59,7 +60,8 @@ export default function ProtectedImage({ photo, priority = false }: ProtectedIma
       <div
         onContextMenu={handleContextMenu}
         onDragStart={handleDragStart}
-        className="relative aspect-square cursor-default"
+        onClick={onClick}
+        className={`relative aspect-square ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
       >
         <Image
           src={imageUrl}

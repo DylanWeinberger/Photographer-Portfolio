@@ -5,6 +5,8 @@ import { client } from '@/sanity/lib/client'
 import { navigationQuery, settingsQuery } from '@/lib/queries'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Lightbox from '@/components/Lightbox'
+import { LightboxProvider } from '@/contexts/LightboxContext'
 import type { Navigation, Settings } from '@/types/sanity'
 
 const geistSans = Geist({
@@ -53,7 +55,7 @@ export default async function RootLayout({
   ])
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       {/**
        * STICKY FOOTER LAYOUT
        *
@@ -67,28 +69,34 @@ export default async function RootLayout({
        */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        suppressHydrationWarning
       >
-        {/* Header - conditional rendering: only show if data exists */}
-        {navigation && settings && (
-          <Header navigation={navigation} settings={settings} />
-        )}
+        <LightboxProvider>
+          {/* Header - conditional rendering: only show if data exists */}
+          {navigation && settings && (
+            <Header navigation={navigation} settings={settings} />
+          )}
 
-        {/**
-         * Main content area
-         * flex-1: Grows to fill available space, pushing footer to bottom
-         */}
-        <main className="flex-1">
-          {children}
-        </main>
+          {/**
+           * Main content area
+           * flex-1: Grows to fill available space, pushing footer to bottom
+           */}
+          <main className="flex-1">
+            {children}
+          </main>
 
-        {/**
-         * Footer - conditional rendering: only show if settings exist
-         * Footer only needs settings (for social links and copyright)
-         * Navigation is not required for footer
-         */}
-        {settings && (
-          <Footer settings={settings} />
-        )}
+          {/**
+           * Footer - conditional rendering: only show if settings exist
+           * Footer only needs settings (for social links and copyright)
+           * Navigation is not required for footer
+           */}
+          {settings && (
+            <Footer settings={settings} />
+          )}
+
+          {/* Lightbox - renders when opened */}
+          <Lightbox />
+        </LightboxProvider>
       </body>
     </html>
   );

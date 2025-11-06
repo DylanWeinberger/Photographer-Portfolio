@@ -113,7 +113,7 @@ export const allPhotosQuery = groq`
     displayQuality,
     watermarkEnabled,
     featured,
-    tags,
+    tags[]-> { _id, _type, name, 'slug': slug.current },
     takenAt,
     location
   }
@@ -228,7 +228,7 @@ export const tagBySlugQuery = groq`
       displayQuality,
       watermarkEnabled,
       featured,
-      tags,
+      tags[]-> { _id, _type, name, 'slug': slug.current },
       takenAt,
       location
     }

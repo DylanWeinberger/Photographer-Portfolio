@@ -1,5 +1,8 @@
+'use client'
+
 import type { Photo } from '@/types/sanity'
 import ProtectedImage from './ProtectedImage'
+import { useLightbox } from '@/contexts/LightboxContext'
 
 interface PhotoGridProps {
   photos: Photo[]
@@ -14,6 +17,7 @@ interface PhotoGridProps {
  * - 3 columns on desktop
  */
 export default function PhotoGrid({ photos }: PhotoGridProps) {
+  const { openLightbox } = useLightbox()
   // Handle empty state
   if (!photos || photos.length === 0) {
     return (
@@ -48,6 +52,7 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
           key={photo._id}
           photo={photo}
           priority={index < 3} // Prioritize loading first 3 images
+          onClick={() => openLightbox(photos, index)}
         />
       ))}
     </div>
