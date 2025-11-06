@@ -172,3 +172,65 @@ export const settingsQuery = groq`
     footer
   }
 `
+
+/**
+ * TAG BY SLUG QUERY
+ *
+ * Fetches a single tag by its slug along with all photos that have that tag.
+ * This query powers individual tag pages at /tag/[slug].
+ *
+ * Query breakdown:
+ * - *[_type == "tag" && slug.current == $slug] - Find tag with matching slug
+ * - [0] - Get first match (slugs are unique)
+ * - "photos": *[...] - Nested query to find all photos with this tag
+ * - references(^._id) - Find photos that reference this tag's ID
+ * - []-> dereferences the photo array to get full photo objects
+ *
+ * Parameters:
+ * - $slug: string - The tag slug to search for
+ *
+ * Returns: Tag data with associated photos including:
+ * - Tag metadata (name, display name, descriptions, hero image)
+ * - Color scheme and layout settings
+ * - Navigation settings
+ * - Array of all photos tagged with this tag
+ */
+export const tagBySlugQuery = groq`
+  *[_type == "tag" && slug.current == $slug][0] {
+    _id,
+    _type,
+    name,
+    slug,
+    displayName,
+    headerText,
+    subheader,
+    description,
+    heroImage-> {
+      _id,
+      title,
+      image,
+      altText,
+      displayQuality,
+      watermarkEnabled
+    },
+    layout,
+    colorScheme,
+    showInNav,
+    navOrder,
+    "photos": *[_type == "photo" && references(^._id)] | order(_createdAt desc) {
+      _id,
+      _type,
+      _createdAt,
+      title,
+      image,
+      altText,
+      caption,
+      displayQuality,
+      watermarkEnabled,
+      featured,
+      tags,
+      takenAt,
+      location
+    }
+  }
+`

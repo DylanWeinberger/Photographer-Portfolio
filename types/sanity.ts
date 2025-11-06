@@ -51,15 +51,52 @@ export interface Photo {
   location?: string
 }
 
-// Tag document type
+/**
+ * Color Scheme Types
+ *
+ * Types for tag page color customization.
+ * Supports presets (light/dark/warm/cool) and custom colors.
+ */
+export interface ColorScheme {
+  preset: 'light' | 'dark' | 'warm' | 'cool' | 'custom'
+  backgroundColor?: {
+    hex: string
+  }
+  textColor?: {
+    hex: string
+  }
+  accentColor?: {
+    hex: string
+  }
+}
+
+/**
+ * Tag Document Type
+ *
+ * Tags serve dual purposes:
+ * 1. Photo organization (tagging system)
+ * 2. Portfolio pages (automatically generated at /tag/[slug])
+ *
+ * This combines the simplicity of tag-based organization with the flexibility
+ * of custom page styling and content.
+ */
 export interface Tag {
   _id: string
   _type: 'tag'
+  // Basic info (required)
   name: string
   slug: {
     current: string
   }
+  // Page display settings (optional)
+  displayName?: string
+  headerText?: string
+  subheader?: string
   description?: string
+  heroImage?: Photo
+  // Layout and styling (optional)
+  layout?: 'grid-3' | 'grid-4' | 'masonry'
+  colorScheme?: ColorScheme
 }
 
 /**
@@ -170,3 +207,4 @@ export interface Settings {
     showSocialLinks: boolean
   }
 }
+

@@ -4,6 +4,7 @@ import "./globals.css";
 import { client } from '@/sanity/lib/client'
 import { navigationQuery, settingsQuery } from '@/lib/queries'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import type { Navigation, Settings } from '@/types/sanity'
 
 const geistSans = Geist({
@@ -39,10 +40,10 @@ export default async function RootLayout({
    * FETCH SITE-WIDE DATA
    *
    * Navigation and settings are fetched here because:
-   * - They appear on every page (in the header)
+   * - They appear on every page (in header and footer)
    * - Fetched once per page load and reused
    * - Server component - no client-side fetching needed
-   * - Data is passed as props to Header component
+   * - Data is passed as props to Header and Footer components
    *
    * Promise.all fetches both in parallel for better performance.
    */
@@ -53,14 +54,41 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      {/**
+       * STICKY FOOTER LAYOUT
+       *
+       * flex flex-col min-h-screen: Makes body a flex column that fills viewport
+       * This ensures footer sticks to bottom even on short pages.
+       *
+       * Structure:
+       * - Header (auto height)
+       * - Main content (flex-1 - grows to fill space)
+       * - Footer (auto height, mt-auto pushes to bottom)
+       */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        {/* Conditional rendering: only show Header if data exists */}
+        {/* Header - conditional rendering: only show if data exists */}
         {navigation && settings && (
           <Header navigation={navigation} settings={settings} />
         )}
-        {children}
+
+        {/**
+         * Main content area
+         * flex-1: Grows to fill available space, pushing footer to bottom
+         */}
+        <main className="flex-1">
+          {children}
+        </main>
+
+        {/**
+         * Footer - conditional rendering: only show if settings exist
+         * Footer only needs settings (for social links and copyright)
+         * Navigation is not required for footer
+         */}
+        {settings && (
+          <Footer settings={settings} />
+        )}
       </body>
     </html>
   );
