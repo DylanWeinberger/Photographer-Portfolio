@@ -53,3 +53,15 @@ body {
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
 }
+
+.nav-item {
+  @apply block pb-1 pt-2 relative;
+}
+
+.nav-item span {
+  @apply absolute left-0 bottom-0 w-0 h-[2px] bg-gray-800 transition-all duration-300;
+}
+
+.nav-item:hover span {
+  @apply w-full;
+}

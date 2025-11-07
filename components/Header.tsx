@@ -121,17 +121,19 @@ export default function Header({ navigation, settings }: HeaderProps) {
                       href={getHref(item)}
                       target={item.openInNewTab ? '_blank' : undefined}
                       rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
-                      className="hover:opacity-70 transition-opacity"
+                      className="nav-item"
                     >
                       {item.label}
+                      <span></span>
                     </a>
                   ) : (
                     // Internal link - use Next.js <Link>
                     <Link
                       href={getHref(item)}
-                      className="hover:opacity-70 transition-opacity"
+                      className="nav-item"
                     >
                       {item.label}
+                      <span></span>
                     </Link>
                   )}
                 </li>
@@ -183,6 +185,16 @@ export default function Header({ navigation, settings }: HeaderProps) {
                   )}
                 </li>
               ))}
+              {/* Contact Link */}
+              <li>
+                <Link
+                  href="/contact"
+                  className="block py-2 hover:opacity-70 transition-opacity"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+              </li>
             </ul>
           </nav>
         )}
