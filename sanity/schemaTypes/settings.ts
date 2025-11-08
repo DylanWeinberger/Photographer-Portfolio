@@ -90,35 +90,11 @@ export const settingsType = defineType({
       },
       fields: [
         defineField({
-          name: 'instagram',
-          title: 'Instagram URL',
+          name: 'flickr',
+          title: 'flickr URL',
           type: 'url',
-          description: 'Full Instagram profile URL',
-          placeholder: 'https://instagram.com/yourprofile',
-          validation: (Rule) =>
-            Rule.uri({
-              scheme: ['http', 'https'],
-            }),
-        }),
-
-        defineField({
-          name: 'facebook',
-          title: 'Facebook URL',
-          type: 'url',
-          description: 'Full Facebook page or profile URL',
-          placeholder: 'https://facebook.com/yourpage',
-          validation: (Rule) =>
-            Rule.uri({
-              scheme: ['http', 'https'],
-            }),
-        }),
-
-        defineField({
-          name: 'twitter',
-          title: 'Twitter/X URL',
-          type: 'url',
-          description: 'Full Twitter/X profile URL',
-          placeholder: 'https://twitter.com/yourprofile',
+          description: 'Full flickr profile URL',
+          placeholder: 'https://www.flickr.com/yourprofile',
           validation: (Rule) =>
             Rule.uri({
               scheme: ['http', 'https'],

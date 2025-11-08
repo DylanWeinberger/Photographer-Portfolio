@@ -107,7 +107,7 @@ export const navigationType = defineType({
               name: 'externalUrl',
               title: 'External URL',
               type: 'url',
-              description: 'Full URL including https:// (e.g., "https://instagram.com/username")',
+              description: 'Full URL including https:// (e.g., "https://flickr.com/username")',
               hidden: ({ parent }) => parent?.linkType !== 'external',
               validation: (Rule) =>
                 Rule.custom((value, context) => {

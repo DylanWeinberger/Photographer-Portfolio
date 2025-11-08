@@ -89,11 +89,6 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
             {photo.caption}
           </p>
         )}
-        {photo.featured && (
-          <span className="inline-flex items-center mt-2 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            ⭐ Featured
-          </span>
-        )}
       </div>
     </div>
   )

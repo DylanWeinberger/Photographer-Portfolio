@@ -24,6 +24,7 @@ This is a full-stack photographer portfolio application that allows photographer
 - **[Sanity Studio](https://www.sanity.io/studio)** - Content management interface
 - **[next-sanity 11.6.3](https://github.com/sanity-io/next-sanity)** - Next.js integration
 - **[GROQ](https://www.sanity.io/docs/groq)** - Query language for Sanity
+- **[Resend](https://resend.com/)** - Email API for contact form
 
 ### Image Optimization
 - **Next.js Image Component** - Automatic image optimization
@@ -35,16 +36,31 @@ This is a full-stack photographer portfolio application that allows photographer
 ```
 photographer-portfolio/
 ├── app/                      # Next.js App Router
+│   ├── contact/             # Contact page with form
+│   │   └── page.tsx         # Contact form with rate limiting
 │   ├── photos/              # Photo gallery page
 │   │   └── page.tsx         # Server component with data fetching
+│   ├── tag/[slug]/          # Dynamic tag pages
+│   │   └── page.tsx         # Tag-filtered gallery with pagination
 │   ├── sanity/              # Sanity Studio route
 │   │   └── [[...tool]]/
+│   ├── layout.tsx           # Root layout with navigation
 │   └── globals.css          # Global styles + protection CSS
 ├── components/              # React components
-│   ├── ProtectedImage.tsx   # Image with right-click protection
-│   └── PhotoGrid.tsx        # Responsive grid layout
+│   ├── About.tsx            # About section component
+│   ├── FeaturedSection.tsx  # Featured work section
+│   ├── Footer.tsx           # Site footer
+│   ├── Header.tsx           # Site header with navigation
+│   ├── InfoPanel.tsx        # Photo metadata panel (desktop/mobile)
+│   ├── Lightbox.tsx         # Interactive photo viewer
+│   ├── Pagination.tsx       # Pagination component
+│   ├── PhotoGrid.tsx        # Responsive grid layout
+│   └── ProtectedImage.tsx   # Image with right-click protection
 ├── lib/                     # Utility functions
-│   └── imageBuilder.ts      # Sanity image URL helpers
+│   ├── colorSchemes.ts      # Tag color theme system
+│   ├── imageBuilder.ts      # Sanity image URL helpers
+│   ├── queries.ts           # GROQ queries
+│   └── rateLimit.ts         # Contact form rate limiting
 ├── sanity/                  # Sanity configuration
 │   ├── env.ts              # Environment variable management
 │   ├── lib/
@@ -52,8 +68,11 @@ photographer-portfolio/
 │   │   └── image.ts        # Image URL builder
 │   ├── schemaTypes/        # Content schemas
 │   │   ├── index.ts        # Schema exports
+│   │   ├── homepage.ts     # Homepage content schema
+│   │   ├── navigation.ts   # Site navigation schema
 │   │   ├── photo.ts        # Photo document type
-│   │   └── tag.ts          # Tag document type
+│   │   ├── settings.ts     # Site settings schema
+│   │   └── tag.ts          # Tag document type with page customization
 │   └── structure.ts        # Studio structure customization
 ├── types/                   # TypeScript types
 │   └── sanity.ts           # Sanity data types
@@ -98,12 +117,17 @@ photographer-portfolio/
 
    # For preview mode (optional)
    SANITY_PREVIEW_SECRET="your-secret-string"
+
+   # For contact form
+   RESEND_API_KEY="your-resend-api-key"
+   CONTACT_EMAIL="your-email@example.com"
    ```
 
    **How to get these values:**
    - Run `npx sanity init` if you haven't already
    - Project ID: Found in your Sanity project settings
    - API Token: Generate in Sanity Manage → API → Tokens
+   - Resend API Key: Sign up at [resend.com](https://resend.com) and create an API key
 
 4. **Run the development server**
    ```bash
@@ -130,12 +154,21 @@ photographer-portfolio/
 ## 📸 Features
 
 ### Content Management
-- ✅ **Photo Documents** - Title, image, caption, alt text
-- ✅ **Tag System** - Reusable, organized tags
+- ✅ **Photo Documents** - Title, image, caption, alt text, metadata
+- ✅ **Tag System** - Reusable tags with custom page styling
 - ✅ **Featured Photos** - Highlight important work
 - ✅ **Display Quality** - High/Medium/Low settings
-- ✅ **Watermark Toggle** - Per-photo watermark control
+- ✅ **Homepage Builder** - Hero, featured work, and about sections
+- ✅ **Site Navigation** - Customizable menu via Sanity
+- ✅ **Color Schemes** - Tag pages with custom themes
 - ✅ **Custom Sorting** - Multiple sort options
+
+### User Experience
+- 🎨 **Interactive Lightbox** - Full-screen viewer with zoom, navigation, keyboard controls
+- 📊 **Info Panel** - Photo metadata sidebar (desktop) and sheet (mobile)
+- 🔖 **Dynamic Tag Pages** - Filterable galleries with pagination
+- 📧 **Contact Form** - Integrated with Resend, rate limiting, honeypot protection
+- 🎯 **Responsive Navigation** - Mobile-friendly header and footer
 
 ### Image Protection
 - 🔒 **Right-Click Prevention** - Shows "Image protected" warning
@@ -149,11 +182,12 @@ photographer-portfolio/
 - ⚡ **Blur Placeholders** - Smooth loading experience
 - ⚡ **Lazy Loading** - Images load as you scroll
 - ⚡ **CDN Delivery** - Sanity's global CDN
+- ⚡ **Pagination** - Efficient loading for large galleries
 
 ### Responsive Design
-- 📱 **Mobile First** - 1 column layout
+- 📱 **Mobile First** - 1 column layout, touch-optimized
 - 💻 **Tablet** - 2 column layout
-- 🖥️ **Desktop** - 3 column layout
+- 🖥️ **Desktop** - 3 column layout with sidebar
 
 ## 🎨 Customization
 
@@ -229,25 +263,27 @@ git status
 - [x] Photo grid layout
 - [x] Basic photo display page
 
-### Phase 2 🚀 (In Progress)
-- [ ] Homepage with featured photos
-- [ ] Individual photo detail pages
-- [ ] Tag filtering
-- [ ] Search functionality
+### Phase 2 ✅ (Completed)
+- [x] Homepage with featured photos
+- [x] Interactive lightbox for full-size images
+- [x] Tag filtering with dynamic pages
+- [x] Contact form with rate limiting
+- [x] Site navigation and footer
+- [x] About section
+- [x] Photo metadata panel
 
-### Phase 3 📅 (Planned)
-- [ ] Lightbox/modal for full-size images
-- [ ] Visible watermark overlay
+### Phase 3 🚀 (In Progress)
+- [x] Pagination for tag galleries
+- [ ] Search functionality
 - [ ] Photo collections/galleries
-- [ ] Contact form
-- [ ] About page
+- [ ] Blog integration
 
 ### Phase 4 🎯 (Future)
 - [ ] Client proofing galleries (password protected)
 - [ ] Shopping cart for prints
-- [ ] Blog integration
 - [ ] Social media sharing
 - [ ] Advanced image effects
+- [ ] Visible watermark overlay
 
 ## 🐛 Troubleshooting
 

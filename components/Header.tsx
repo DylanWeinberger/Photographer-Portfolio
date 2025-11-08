@@ -51,7 +51,7 @@ export default function Header({ navigation, settings }: HeaderProps) {
    * Generate correct href based on link type:
    * - 'home' → '/'
    * - 'internal' → internalLink value (e.g., '/photos')
-   * - 'external' → externalUrl value (e.g., 'https://instagram.com/...')
+   * - 'external' → externalUrl value (e.g., 'https://flickr.com/...')
    *
    * This centralizes the link logic so it's consistent across
    * desktop and mobile menu rendering.
@@ -100,7 +100,7 @@ export default function Header({ navigation, settings }: HeaderProps) {
               </div>
             )}
             {/* Site title */}
-            <span className="text-xl font-semibold">
+            <span className="text-xl font-semibold bebas">
               {settings.siteTitle}
             </span>
           </Link>

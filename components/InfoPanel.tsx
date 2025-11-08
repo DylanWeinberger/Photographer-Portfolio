@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { useLightbox } from '@/contexts/LightboxContext'
 import type { Photo } from '@/types/sanity'
 
 interface InfoPanelProps {
@@ -10,6 +11,7 @@ interface InfoPanelProps {
 }
 
 export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
+  const { closeLightbox } = useLightbox()
   // Format date if available
   const formatDate = (dateString?: string) => {
     if (!dateString) return null
@@ -90,7 +92,7 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
   // tag may be a dereferenced object or a reference { _ref }
   const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
   // Prefer explicit slug if available
-  const slug = (tag as any).slug?.current
+  const slug = (tag as any).slug 
     ?? (tag as any)._ref // fallback — may not be a friendly slug
 
   // if slug contains something like `tag-abc123` you might want to clean it:
@@ -104,6 +106,9 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
     <Link
       key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
       href={href}
+      onClick={() => {
+        closeLightbox();
+      }}
       className="inline-block px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm text-gray-200 transition-colors"
     >
       #{tagName}
@@ -187,30 +192,30 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
-                                        {photo.tags.map((tag) => {
-  // tag may be a dereferenced object or a reference { _ref }
-  const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
-  // Prefer explicit slug if available
-  const slug = (tag as any).slug?.current
-    ?? (tag as any)._ref // fallback — may not be a friendly slug
+                      {photo.tags.map((tag) => {
+                      // tag may be a dereferenced object or a reference { _ref }
+                      const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
+                      // Prefer explicit slug if available
+                      const slug = (tag as any).slug?.current
+                        ?? (tag as any)._ref // fallback — may not be a friendly slug
 
-  // if slug contains something like `tag-abc123` you might want to clean it:
-  const cleanedSlug = typeof slug === 'string'
-    ? slug.replace(/^tag[._-]?/, '') // optional sanitization — adjust to your _ref format
-    : undefined
+                      // if slug contains something like `tag-abc123` you might want to clean it:
+                      const cleanedSlug = typeof slug === 'string'
+                        ? slug.replace(/^tag[._-]?/, '') // optional sanitization — adjust to your _ref format
+                        : undefined
 
-  const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
+                      const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
 
-  return (
-    <Link
-      key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
-      href={href}
-      className="inline-block px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm text-gray-200 transition-colors"
-    >
-      #{tagName}
-    </Link>
-  )
-})}
+                      return (
+                        <Link
+                          key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
+                          href={href}
+                          className="inline-block px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm text-gray-200 transition-colors"
+                        >
+                          #{tagName}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
               )}

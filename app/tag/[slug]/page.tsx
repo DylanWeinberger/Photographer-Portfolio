@@ -1,23 +1,27 @@
 import { notFound } from 'next/navigation'
 import { client } from '@/sanity/lib/client'
-import { tagBySlugQuery } from '@/lib/queries'
+import { tagBySlugQuery, paginatedTagPhotosQuery } from '@/lib/queries'
 import { getColorSchemeStyles } from '@/lib/colorSchemes'
 import { getFullImageUrl } from '@/lib/imageBuilder'
 import type { Tag, Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
+import Pagination from '@/components/Pagination'
 
 /**
- * TAG PAGE - Dynamic Route
+ * TAG PAGE - Dynamic Route with Pagination
  *
  * Displays a tag page at /tag/[slug] with:
  * - Tag information (header, subheader, description)
  * - Optional hero image
- * - All photos tagged with this tag
+ * - Paginated photos tagged with this tag
  * - Custom color scheme
  * - Custom layout (grid-3, grid-4, masonry)
  *
  * This approach combines tag-based organization with page-like customization.
  */
+
+// Photos per page - divisible by 2, 3, 4, 6 for responsive grid
+const PHOTOS_PER_PAGE = 24
 
 interface TagPageData extends Tag {
   photos: Photo[]
@@ -27,10 +31,11 @@ interface PageProps {
   params: Promise<{
     slug: string
   }>
+  searchParams: Promise<{ page?: string }>
 }
 
 /**
- * Fetch tag data and associated photos
+ * Fetch tag data (metadata only, without photos)
  */
 async function getTagData(slug: string): Promise<TagPageData | null> {
   try {
@@ -50,11 +55,40 @@ async function getTagData(slug: string): Promise<TagPageData | null> {
 }
 
 /**
+ * Fetch paginated photos for a specific tag
+ */
+async function getPaginatedTagPhotos(slug: string, page: number): Promise<{
+  photos: Photo[]
+  total: number
+}> {
+  try {
+    const start = (page - 1) * PHOTOS_PER_PAGE
+    const end = start + PHOTOS_PER_PAGE
+
+    const result = await client.fetch<{ photos: Photo[]; total: number }>(
+      paginatedTagPhotosQuery,
+      { slug, start, end },
+      {
+        // Cache for 60 seconds, then revalidate in background
+        next: { revalidate: 60 },
+      }
+    )
+
+    return result
+  } catch (error) {
+    console.error('Error fetching paginated tag photos:', error)
+    return { photos: [], total: 0 }
+  }
+}
+
+/**
  * Generate metadata for SEO
  */
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params, searchParams }: PageProps) {
   const { slug } = await params
   const tagData = await getTagData(slug)
+  const { page: pageParam } = await searchParams
+  const page = Number(pageParam) || 1
 
   if (!tagData) {
     return {
@@ -65,16 +99,23 @@ export async function generateMetadata({ params }: PageProps) {
   const title = tagData.displayName || tagData.name
   const description = tagData.description || `View all ${tagData.name} photos`
 
+  if (page === 1) {
+    return {
+      title: `${title} | Photographer Portfolio`,
+      description,
+    }
+  }
+
   return {
-    title: `${title} | Photographer Portfolio`,
-    description,
+    title: `${title} - Page ${page} | Photographer Portfolio`,
+    description: `${description} - Page ${page}`,
   }
 }
 
 /**
  * Tag Page Component
  */
-export default async function TagPage({ params }: PageProps) {
+export default async function TagPage({ params, searchParams }: PageProps) {
   const { slug } = await params
   const tagData = await getTagData(slug)
 
@@ -82,6 +123,20 @@ export default async function TagPage({ params }: PageProps) {
   if (!tagData) {
     notFound()
   }
+
+  // Parse and validate page number
+  const { page: pageParam } = await searchParams
+  const page = Math.max(1, Number(pageParam) || 1)
+
+  // Fetch paginated photos
+  const { photos, total } = await getPaginatedTagPhotos(slug, page)
+
+  // Calculate total pages
+  const totalPages = Math.ceil(total / PHOTOS_PER_PAGE)
+
+  // Calculate range for display
+  const startRange = (page - 1) * PHOTOS_PER_PAGE + 1
+  const endRange = Math.min(page * PHOTOS_PER_PAGE, total)
 
   // Get color scheme styles
   const colors = getColorSchemeStyles(tagData.colorScheme)
@@ -130,15 +185,29 @@ export default async function TagPage({ params }: PageProps) {
             </p>
           )}
           <p className="mt-4 text-sm opacity-60">
-            {tagData.photos.length} photo{tagData.photos.length === 1 ? '' : 's'}
+            {total > 0 ? (
+              <>
+                Showing {startRange}–{endRange} of {total} photo
+                {total === 1 ? '' : 's'}
+              </>
+            ) : (
+              '0 photos'
+            )}
           </p>
         </div>
       </header>
 
       {/* Photos Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {tagData.photos.length > 0 ? (
-          <PhotoGrid photos={tagData.photos} />
+        {photos.length > 0 ? (
+          <>
+            <PhotoGrid photos={photos} />
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              basePath={`/tag/${slug}`}
+            />
+          </>
         ) : (
           <div className="text-center py-12">
             <div

@@ -33,7 +33,7 @@ export default function About({ about }: AboutProps) {
   return (
     <section className="py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-12 md:mb-16 text-center">
+        <h2 className="bebas text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-12 md:mb-16 text-center">
           {about.heading}
         </h2>
 

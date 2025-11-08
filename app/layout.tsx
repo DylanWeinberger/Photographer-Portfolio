@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Bebas_Neue } from 'next/font/google'
 import "./globals.css";
 import { client } from '@/sanity/lib/client'
 import { navigationQuery, settingsQuery } from '@/lib/queries'
@@ -9,15 +9,22 @@ import Lightbox from '@/components/Lightbox'
 import { LightboxProvider } from '@/contexts/LightboxContext'
 import type { Navigation, Settings } from '@/types/sanity'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// Google font (Inter) - downloaded & optimized at build time
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  weight: ['300','400','600','700'], // only include weights you use
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Google font (Bebas Neue) - downloaded & optimized at build time
+const bebas = Bebas_Neue({
+  subsets: ['latin'],
+  variable: '--font-bebas',
+  display: 'swap',
+  weight: ['400'], // only include weights you use
+})
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -55,7 +62,7 @@ export default async function RootLayout({
   ])
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning >
       {/**
        * STICKY FOOTER LAYOUT
        *
@@ -68,7 +75,7 @@ export default async function RootLayout({
        * - Footer (auto height, mt-auto pushes to bottom)
        */}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${inter.variable} ${bebas.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
         <LightboxProvider>

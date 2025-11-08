@@ -174,6 +174,74 @@ export const settingsQuery = groq`
 `
 
 /**
+ * PAGINATED PHOTOS QUERY
+ *
+ * Fetches a page of photos with total count for pagination.
+ * Used on /photos page with query parameters.
+ *
+ * Parameters:
+ * - $start: number - Starting index (e.g., 0, 24, 48)
+ * - $end: number - Ending index (e.g., 24, 48, 72)
+ *
+ * Returns: Object with photos array and total count
+ */
+export const paginatedPhotosQuery = groq`
+  {
+    "photos": *[_type == "photo"] | order(featured desc, _createdAt desc) [$start...$end] {
+      _id,
+      _type,
+      _createdAt,
+      title,
+      image,
+      altText,
+      caption,
+      displayQuality,
+      watermarkEnabled,
+      featured,
+      tags[]-> { _id, _type, name, 'slug': slug.current },
+      takenAt,
+      location
+    },
+    "total": count(*[_type == "photo"])
+  }
+`
+
+/**
+ * PAGINATED TAG PHOTOS QUERY
+ *
+ * Fetches a page of photos for a specific tag with total count.
+ * Used on /tag/[slug] pages with query parameters.
+ *
+ * Parameters:
+ * - $slug: string - The tag slug
+ * - $start: number - Starting index
+ * - $end: number - Ending index
+ *
+ * Returns: Object with photos array and total count for the tag
+ */
+export const paginatedTagPhotosQuery = groq`
+  {
+    "photos": *[_type == "photo" && references(*[_type == "tag" && slug.current == $slug][0]._id)]
+      | order(_createdAt desc) [$start...$end] {
+      _id,
+      _type,
+      _createdAt,
+      title,
+      image,
+      altText,
+      caption,
+      displayQuality,
+      watermarkEnabled,
+      featured,
+      tags[]-> { _id, _type, name, 'slug': slug.current },
+      takenAt,
+      location
+    },
+    "total": count(*[_type == "photo" && references(*[_type == "tag" && slug.current == $slug][0]._id)])
+  }
+`
+
+/**
  * TAG BY SLUG QUERY
  *
  * Fetches a single tag by its slug along with all photos that have that tag.

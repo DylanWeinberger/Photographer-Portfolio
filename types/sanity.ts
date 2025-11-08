@@ -196,9 +196,7 @@ export interface Settings {
     alt: string
   }
   socialLinks?: {
-    instagram?: string
-    facebook?: string
-    twitter?: string
+    flickr?: string
     email?: string
   }
   footer?: {
