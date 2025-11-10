@@ -29,11 +29,7 @@ async function getPaginatedPhotos(page: number): Promise<{
 
     const result = await client.fetch<{ photos: Photo[]; total: number }>(
       paginatedPhotosQuery,
-      { start, end },
-      {
-        // Cache for 60 seconds, then revalidate in background
-        next: { revalidate: 60 },
-      }
+      { start, end }
     )
 
     return result
@@ -137,3 +133,9 @@ export default async function PhotosPage({ searchParams }: PageProps) {
     </div>
   )
 }
+
+// ISR: Revalidate every 30 minutes (1800 seconds)
+// Reasoning: Photo gallery changes when new photos are added or removed
+// 30 minutes provides a good balance between showing new content and performance
+// Each paginated page is cached independently for optimal performance
+export const revalidate = 1800

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue } from 'next/font/google'
+import { Oswald, Bebas_Neue } from 'next/font/google'
 import "./globals.css";
 import { client } from '@/sanity/lib/client'
 import { navigationQuery, settingsQuery } from '@/lib/queries'
@@ -9,10 +9,10 @@ import Lightbox from '@/components/Lightbox'
 import { LightboxProvider } from '@/contexts/LightboxContext'
 import type { Navigation, Settings } from '@/types/sanity'
 
-// Google font (Inter) - downloaded & optimized at build time
-const inter = Inter({
+// Google font (Oswald) - downloaded & optimized at build time
+const oswald = Oswald({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-Oswald',
   display: 'swap',
   weight: ['300','400','600','700'], // only include weights you use
 })
@@ -75,7 +75,7 @@ export default async function RootLayout({
        * - Footer (auto height, mt-auto pushes to bottom)
        */}
       <body
-        className={`${inter.variable} ${bebas.variable} antialiased flex flex-col min-h-screen`}
+        className={`${oswald.variable} ${bebas.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
         <LightboxProvider>

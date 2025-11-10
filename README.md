@@ -178,16 +178,101 @@ photographer-portfolio/
 
 ### Performance
 - ⚡ **Server Components** - Fast initial page load
+- ⚡ **ISR (Incremental Static Regeneration)** - Pages cached at edge with time-based revalidation
 - ⚡ **Image Optimization** - Automatic WebP/AVIF conversion
 - ⚡ **Blur Placeholders** - Smooth loading experience
 - ⚡ **Lazy Loading** - Images load as you scroll
-- ⚡ **CDN Delivery** - Sanity's global CDN
+- ⚡ **CDN Delivery** - Sanity's global CDN with edge caching
 - ⚡ **Pagination** - Efficient loading for large galleries
+- ⚡ **On-Demand Revalidation** - API endpoint for instant cache updates
 
 ### Responsive Design
 - 📱 **Mobile First** - 1 column layout, touch-optimized
 - 💻 **Tablet** - 2 column layout
 - 🖥️ **Desktop** - 3 column layout with sidebar
+
+## ⚡ ISR (Incremental Static Regeneration)
+
+This project uses Next.js ISR for optimal performance. Pages are statically generated and cached at the edge, then automatically revalidated at specified intervals.
+
+### Revalidation Strategy
+
+**Page-Level Revalidation Times:**
+- **Homepage (/)**: 1 hour (3600 seconds)
+  - Hero, featured work, and about sections change infrequently
+- **Photos Page (/photos)**: 30 minutes (1800 seconds)
+  - Balances fresh content with performance
+- **Tag Pages (/tag/[slug])**: 30 minutes (1800 seconds)
+  - Updates when photos are added, removed, or retagged
+- **Contact Page (/contact)**: 1 hour (3600 seconds)
+  - Contact info and social links rarely change
+
+### How ISR Works
+
+1. **First Request**: Page is generated on-demand and cached
+2. **Subsequent Requests**: Served instantly from cache (50-150ms vs 500-1500ms)
+3. **After Revalidation Period**: Background regeneration with fresh data
+4. **Cache Invalidation**: Old cache served while new version generates
+
+### On-Demand Revalidation
+
+Trigger instant cache updates without waiting for the revalidation period:
+
+```bash
+curl -X POST https://your-site.com/api/revalidate \
+  -H "Content-Type: application/json" \
+  -H "x-revalidate-secret: your-secret-token" \
+  -d '{"path": "/photos"}'
+```
+
+**Revalidation Examples:**
+```bash
+# Revalidate homepage
+{"path": "/"}
+
+# Revalidate photos page
+{"path": "/photos"}
+
+# Revalidate specific tag page
+{"path": "/tag/wedding"}
+
+# Revalidate all pages (use sparingly)
+{"path": "/", "type": "layout"}
+```
+
+### Adjusting Revalidation Times
+
+To change revalidation times, edit the `revalidate` export in each page:
+
+```typescript
+// app/page.tsx
+export const revalidate = 3600 // Change to desired seconds
+```
+
+**Considerations:**
+- Lower values = fresher content, more Sanity API calls
+- Higher values = better performance, potentially stale content
+- Use on-demand revalidation for instant updates when needed
+
+### Sanity Webhook Integration (Optional)
+
+For instant cache updates when content changes in Sanity:
+
+1. **Create webhook in Sanity dashboard:**
+   - URL: `https://your-site.com/api/revalidate`
+   - HTTP Method: `POST`
+   - Headers: `x-revalidate-secret: your-secret-token`
+   - Dataset: `production`
+   - Trigger on: `Create`, `Update`, `Delete`
+
+2. **Configure webhook body based on document type:**
+   ```json
+   {
+     "path": "/photos"
+   }
+   ```
+
+This ensures content appears immediately after publishing in Sanity.
 
 ## 🎨 Customization
 

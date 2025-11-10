@@ -11,9 +11,7 @@ import About from '@/components/About'
  */
 async function getHomepage(): Promise<Homepage | null> {
   try {
-    const homepage = await client.fetch<Homepage>(homepageQuery, {}, {
-      next: { revalidate: 60 }
-    })
+    const homepage = await client.fetch<Homepage>(homepageQuery)
     return homepage
   } catch (error) {
     console.error('Error fetching homepage:', error)
@@ -26,9 +24,7 @@ async function getHomepage(): Promise<Homepage | null> {
  */
 async function getFeaturedPhotos(): Promise<Photo[]> {
   try {
-    const photos = await client.fetch<Photo[]>(featuredPhotosQuery, {}, {
-      next: { revalidate: 60 }
-    })
+    const photos = await client.fetch<Photo[]>(featuredPhotosQuery)
     return photos
   } catch (error) {
     console.error('Error fetching featured photos:', error)
@@ -86,3 +82,9 @@ export const metadata = {
   title: 'Photographer Portfolio',
   description: 'Professional photography portfolio',
 }
+
+// ISR: Revalidate every 1 hour (3600 seconds)
+// Reasoning: Homepage content (hero, featured work, about) is curated and changes infrequently
+// This provides fast page loads while keeping content reasonably fresh
+// Can be adjusted if content updates more/less frequently
+export const revalidate = 3600

@@ -96,3 +96,9 @@ export default async function ContactPage() {
     </div>
   )
 }
+
+// ISR: Revalidate every 1 hour (3600 seconds)
+// Reasoning: Contact page content (form, social links) changes very infrequently
+// Longer revalidation time is appropriate since contact info is relatively static
+// Provides fast page loads while keeping social links and settings current
+export const revalidate = 3600

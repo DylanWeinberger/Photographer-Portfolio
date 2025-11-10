@@ -240,8 +240,9 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   )
 }
 
-/**
- * Enable dynamic rendering
- * This ensures the page is rendered on each request to show the latest photos
- */
-export const dynamic = 'force-dynamic'
+// ISR: Revalidate every 30 minutes (1800 seconds)
+// Reasoning: Tag collections change when photos are added, removed, or retagged
+// 30 minutes ensures content freshness while providing excellent cached performance
+// Each tag slug is cached independently - first request generates, subsequent requests served from cache
+// Works seamlessly with pagination - each page is cached separately
+export const revalidate = 1800
