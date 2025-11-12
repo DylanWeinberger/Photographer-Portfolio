@@ -1,3 +1,15 @@
+/**
+ * ProtectedImage Component
+ *
+ * Fine art image presentation with subtle borders and slow interactions.
+ * Design philosophy:
+ * - Subtle borders (image-border class)
+ * - SLOW hover effects (0.8s)
+ * - Minimal info overlay
+ * - No harsh shadows or effects
+ * - Protection against right-click/drag
+ */
+
 'use client'
 
 import Image from 'next/image'
@@ -11,16 +23,6 @@ interface ProtectedImageProps {
   onClick?: () => void
 }
 
-/**
- * ProtectedImage Component
- *
- * Displays a single photo with protection against:
- * - Right-click/context menu
- * - Drag and drop
- * - Text selection
- *
- * Uses Next.js Image component for automatic optimization.
- */
 export default function ProtectedImage({ photo, priority = false, onClick }: ProtectedImageProps) {
   const [showWarning, setShowWarning] = useState(false)
 
@@ -48,48 +50,54 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
   const blurDataURL = getBlurDataURL(photo.image)
 
   return (
-    <div className="relative group overflow-hidden rounded-lg bg-gray-100">
-      {/* Warning Message */}
+    <div className="relative group">
+      {/* Warning Message - Refined styling */}
       {showWarning && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-black/80 text-white px-4 py-2 rounded-md text-sm font-medium shadow-lg animate-fade-in">
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 bg-[var(--background)]/90 text-[var(--foreground)] px-5 py-3 text-xs uppercase tracking-[0.1em] animate-fade-in border border-[var(--border)]">
           Image protected
         </div>
       )}
 
-      {/* Protected Image */}
+      {/* Protected Image - Aspect ratio with subtle border */}
       <div
         onContextMenu={handleContextMenu}
         onDragStart={handleDragStart}
         onClick={onClick}
-        className={`relative aspect-square ${onClick ? 'cursor-pointer' : 'cursor-default'}`}
+        className={`relative aspect-[4/5] overflow-hidden image-border ${
+          onClick ? 'cursor-pointer' : 'cursor-default'
+        }`}
       >
         <Image
           src={imageUrl}
           alt={altText}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover protected-image transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover protected-image transition-all duration-[var(--transition-slow)] group-hover:brightness-105"
           placeholder="blur"
           blurDataURL={blurDataURL}
           priority={priority}
           draggable={false}
         />
 
-        {/* Subtle overlay on hover */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+        {/* Very subtle overlay on hover */}
+        <div className="absolute inset-0 bg-[var(--background)]/0 group-hover:bg-[var(--background)]/5 transition-all duration-[var(--transition-slow)]" />
       </div>
 
-      {/* Photo Info */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 truncate">
-          {photo.title}
-        </h3>
-        {photo.caption && (
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {photo.caption}
-          </p>
-        )}
-      </div>
+      {/* Photo Info - Minimal, refined */}
+      {(photo.title || photo.caption) && (
+        <div className="mt-4">
+          {photo.title && (
+            <h3 className="text-sm text-[var(--foreground)] font-normal mb-1 tracking-wide">
+              {photo.title}
+            </h3>
+          )}
+          {photo.caption && (
+            <p className="text-xs text-[var(--subtle-text)] line-clamp-2 leading-relaxed">
+              {photo.caption}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   )
 }

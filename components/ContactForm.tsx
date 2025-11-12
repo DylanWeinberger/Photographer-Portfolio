@@ -174,7 +174,7 @@ export default function ContactForm() {
           </div>
           <Link
             href="/"
-            className="inline-block px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+            className="inline-block px-6 py-3 bg-gray-900 text-light font-medium rounded-lg hover:bg-gray-800 transition-colors"
           >
             Return to Home
           </Link>
@@ -326,12 +326,12 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-4 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-900 focus:ring-opacity-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full px-6 py-4 bg-gray-900 text-light font-semibold rounded-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-900 focus:ring-opacity-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
                 <svg
-                  className="animate-spin h-5 w-5 text-white"
+                  className="animate-spin h-5 w-5 text-light"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

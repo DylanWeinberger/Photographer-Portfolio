@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Oswald, Bebas_Neue } from 'next/font/google'
+import { IBM_Plex_Sans, Playfair_Display } from 'next/font/google'
 import "./globals.css";
 import { client } from '@/sanity/lib/client'
 import { navigationQuery, settingsQuery } from '@/lib/queries'
@@ -9,18 +9,19 @@ import Lightbox from '@/components/Lightbox'
 import { LightboxProvider } from '@/contexts/LightboxContext'
 import type { Navigation, Settings } from '@/types/sanity'
 
-// Google font (Oswald) - downloaded & optimized at build time
-const oswald = Oswald({
+// Google font (IBM Plex Sans) - downloaded & optimized at build time
+// Sophisticated sans-serif that pairs beautifully with Playfair Display
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ['latin'],
-  variable: '--font-Oswald',
+  variable: '--font-ibm-plex-sans',
   display: 'swap',
-  weight: ['300','400','600','700'], // only include weights you use
+  weight: ['300', '400', '500'], // light, regular, medium for subtle hierarchy
 })
 
-// Google font (Bebas Neue) - downloaded & optimized at build time
-const bebas = Bebas_Neue({
+// Google font (Playfair_Display) - downloaded & optimized at build time
+const playfair = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-bebas',
+  variable: '--font-playfair',
   display: 'swap',
   weight: ['400'], // only include weights you use
 })
@@ -75,7 +76,7 @@ export default async function RootLayout({
        * - Footer (auto height, mt-auto pushes to bottom)
        */}
       <body
-        className={`${oswald.variable} ${bebas.variable} antialiased flex flex-col min-h-screen`}
+        className={`${ibmPlexSans.variable} ${playfair.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
         <LightboxProvider>

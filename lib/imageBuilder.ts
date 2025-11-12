@@ -9,13 +9,18 @@ import type { SanityImage } from '@/types/sanity'
  * - Convert to modern formats (WebP, AVIF)
  * - Apply quality settings
  * - Generate blur placeholders
+ *
+ * Quality Strategy:
+ * - High (85): Hero images, lightbox, featured work, profile photos
+ * - Medium (75): Grid thumbnails, general display
+ * - Low (60): Backgrounds, small images
  */
 
-// Quality settings based on photographer's preference
+// Quality settings optimized for different contexts
 const qualityMap = {
-  high: 80,
-  medium: 60,
-  low: 40,
+  high: 85,    // Hero, lightbox, profile - needs excellent quality
+  medium: 75,  // Grid thumbnails - good balance of quality/size
+  low: 60,     // Backgrounds, small images - acceptable quality
 } as const
 
 /**

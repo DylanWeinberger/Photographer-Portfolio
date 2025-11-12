@@ -58,20 +58,20 @@ export default async function Home() {
 
   return (
     <>
-      {/* Hero Section - Full width, edge-to-edge */}
+      {/* Hero Section - Full width, edge-to-edge, dramatic */}
       <Hero hero={homepage.hero} />
 
-      {/* Featured Section Introduction - Contained */}
+      {/* Featured Section Introduction - Generous spacing */}
       <FeaturedSection featuredSection={homepage.featuredSection} />
 
-      {/* Featured Photos Grid - Contained */}
-      <section className="py-8 md:py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      {/* Featured Photos Grid - Wide container, generous spacing */}
+      <section className="pb-28 md:pb-36 lg:pb-44 px-6 md:px-20 lg:px-24">
+        <div className="max-w-[1600px] mx-auto">
           <PhotoGrid photos={featuredPhotos} />
         </div>
       </section>
 
-      {/* About Section - Full width with background */}
+      {/* About Section - Full width with subtle background */}
       <About about={homepage.about} />
     </>
   )

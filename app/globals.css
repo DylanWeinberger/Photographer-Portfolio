@@ -1,38 +1,111 @@
 @import "tailwindcss";
+
+/**
+ * FINE ART PHOTOGRAPHY DESIGN SYSTEM
+ *
+ * Philosophy: Sophisticated, moody, editorial
+ * - Massive negative space
+ * - Slow, deliberate interactions
+ * - Photography-first, UI almost invisible
+ * - Museum/gallery aesthetic
+ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-oswald: "Oswald", sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  --font-bebas: "Bebas Neue", sans-serif;
+  /* Color System - Sophisticated off-black/off-white palette */
+  --background: #121212;           /* Soft black, not harsh */
+  --foreground: #e8e8e8;           /* Off-white, warmer than pure white */
+  --surface: #1a1a1a;              /* Slightly lighter for cards/sections */
+  --border: #2a2a2a;               /* Dark gray for dividers */
+  --accent-warm: #d4c5b0;          /* Warm sepia for subtle highlights */
+  --accent-cool: #8a9ba8;          /* Cool blue-gray for metadata */
+  --subtle-text: #8a8a8a;          /* Subtle gray for secondary text */
+
+  /* Typography */
+  --font-ibm-plex-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-playfair: "Playfair Display", Georgia, serif;
+
+  /* Transition durations - all slow and deliberate */
+  --transition-slow: 0.8s;
+  --transition-medium: 0.6s;
+  --transition-fast: 0.4s;
+
+  /* Spacing philosophy - generous */
+  --spacing-section: 120px;
+  --spacing-section-mobile: 60px;
+  --spacing-element: 32px;
 }
-
-
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-cool: var(--accent-cool);
+  --color-subtle-text: var(--subtle-text);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #121212;
+    --foreground: #e8e8e8;
   }
+}
+
+/**
+ * GLOBAL STYLES
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-oswald);
+  font-family: var(--font-ibm-plex-sans);
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
   margin: 0;
+  padding: 0;
 }
 
-h1, .bebas {
-  font-family: var(--font-bebas);
+/**
+ * TYPOGRAPHY HIERARCHY
+ */
+
+h1, h2, h3, h4, h5, h6, .playfair {
+  font-family: var(--font-playfair);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-/* Image Protection Styles */
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/**
+ * IMAGE PROTECTION & PRESENTATION
+ */
+
 .protected-image {
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -45,7 +118,16 @@ h1, .bebas {
   pointer-events: none;
 }
 
-/* Fade-in animation for warning message */
+/* Subtle image borders for fine art presentation */
+.image-border {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+/**
+ * ANIMATIONS - Slow and deliberate
+ */
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -57,18 +139,79 @@ h1, .bebas {
   }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out;
+@keyframes image-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-image-fade-in {
+  animation: image-fade-in 0.8s ease-out;
+}
+
+/**
+ * NAVIGATION STYLES - Editorial elegance
+ */
+
 .nav-item {
-  @apply block pb-1 pt-2 relative;
+  position: relative;
+  display: block;
+  padding: 0.5rem 0;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color var(--transition-medium) ease;
 }
 
 .nav-item span {
-  @apply absolute left-0 bottom-0 w-0 h-[2px] bg-gray-800 transition-all duration-300;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--foreground);
+  transition: width var(--transition-medium) ease;
+}
+
+.nav-item:hover {
+  color: var(--accent-warm);
 }
 
 .nav-item:hover span {
-  @apply w-full;
+  width: 100%;
+  background: var(--accent-warm);
+}
+
+/**
+ * LINK STYLES - Slow, subtle interactions
+ */
+
+a {
+  transition: opacity var(--transition-medium) ease,
+              color var(--transition-medium) ease;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+/**
+ * IMAGE HOVER EFFECTS - Subtle brightness
+ */
+
+.image-hover {
+  transition: filter var(--transition-slow) ease,
+              transform var(--transition-slow) ease;
+}
+
+.image-hover:hover {
+  filter: brightness(1.05);
 }

@@ -72,7 +72,7 @@ export default function Pagination({
       {currentPage > 1 ? (
         <Link
           href={getPageUrl(currentPage - 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-700 bg-white border border-dark-300 rounded-lg hover:bg-dark-50 transition-colors"
           aria-label="Previous page"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -81,7 +81,7 @@ export default function Pagination({
       ) : (
         <button
           disabled
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed"
+          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-400 bg-dark-100 border border-dark-200 rounded-lg cursor-not-allowed"
           aria-label="Previous page"
           aria-disabled="true"
         >
@@ -96,7 +96,7 @@ export default function Pagination({
           page === '...' ? (
             <span
               key={`ellipsis-${index}`}
-              className="px-3 py-2 text-sm font-medium text-gray-500"
+              className="px-3 py-2 text-sm font-medium text-dark-500"
             >
               ...
             </span>
@@ -106,8 +106,8 @@ export default function Pagination({
               href={getPageUrl(page as number)}
               className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                 currentPage === page
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-dark-900 text-light'
+                  : 'text-dark-700 bg-light border border-dark-300 hover:bg-dark-50'
               }`}
               aria-label={`Go to page ${page}`}
               aria-current={currentPage === page ? 'page' : undefined}
@@ -122,7 +122,7 @@ export default function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={getPageUrl(currentPage + 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-700 bg-white border border-dark-300 rounded-lg hover:bg-dark-50 transition-colors"
           aria-label="Next page"
         >
           <span className="hidden sm:inline">Next</span>
@@ -131,7 +131,7 @@ export default function Pagination({
       ) : (
         <button
           disabled
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed"
+          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-400 bg-dark-100 border border-dark-200 rounded-lg cursor-not-allowed"
           aria-label="Next page"
           aria-disabled="true"
         >

@@ -83,33 +83,33 @@ export default function Header({ navigation, settings }: HeaderProps) {
   }
 
   return (
-    <header className="border-b">
-      <div className="max-w-6xl mx-auto px-4 py-4">
+    <header className="border-b border-[var(--border)] bg-[var(--background)]">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 py-6 md:py-8">
         <div className="flex items-center justify-between">
-          {/* LOGO AND TITLE */}
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          {/* LOGO AND TITLE - Minimal, refined */}
+          <Link href="/" className="flex items-center gap-3 group">
             {/* Logo if exists */}
             {settings.logo?.asset && (
-              <div className="relative w-10 h-10">
+              <div className="relative w-8 h-8 md:w-10 md:h-10">
                 <Image
                   src={urlFor(settings.logo).width(80).height(80).url()}
                   alt={settings.logo.alt || settings.siteTitle}
                   fill
-                  className="object-contain"
+                  className="object-contain transition-opacity duration-[var(--transition-medium)] group-hover:opacity-70"
                 />
               </div>
             )}
-            {/* Site title */}
-            <span className="text-xl font-semibold bebas">
+            {/* Site title - Playfair Display, elegant sizing */}
+            <span className="text-lg md:text-xl font-normal font-playfair text-[var(--foreground)] transition-colors duration-[var(--transition-medium)] group-hover:text-[var(--accent-warm)]">
               {settings.siteTitle}
             </span>
           </Link>
 
-          {/* DESKTOP NAVIGATION */}
+          {/* DESKTOP NAVIGATION - Minimal, editorial style */}
           {/* hidden: Hide on mobile */}
-          {/* md:block: Show on medium screens and up */}
+          {/* md:flex: Show on medium screens and up */}
           <nav className="hidden md:block">
-            <ul className="flex gap-6">
+            <ul className="flex gap-8 lg:gap-10">
               {navigation.menuItems.map((item, i) => (
                 // Use Sanity's generated `_key` when available. If it's missing or
                 // duplicates (rare), fall back to a deterministic string using
@@ -141,10 +141,10 @@ export default function Header({ navigation, settings }: HeaderProps) {
             </ul>
           </nav>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE MENU BUTTON - Refined */}
           {/* md:hidden: Hide on medium screens and up */}
           <button
-            className="md:hidden text-2xl p-2"
+            className="md:hidden text-xl p-2 text-[var(--foreground)] transition-colors duration-[var(--transition-medium)] hover:text-[var(--accent-warm)]"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
@@ -153,12 +153,12 @@ export default function Header({ navigation, settings }: HeaderProps) {
           </button>
         </div>
 
-        {/* MOBILE NAVIGATION */}
+        {/* MOBILE NAVIGATION - Elegant slide-in */}
         {/* Conditional rendering: only show when mobileMenuOpen is true */}
         {/* md:hidden: Hide on medium screens and up */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-4 pb-4">
-            <ul className="space-y-2">
+          <nav className="md:hidden mt-6 pb-2 border-t border-[var(--border)] pt-6">
+            <ul className="space-y-4">
               {navigation.menuItems.map((item, i) => (
                 // Mobile menu uses the same fallback strategy for keys
                 <li key={item._key ?? `${item.linkType}-${item.label}-${i}`}>
@@ -168,7 +168,7 @@ export default function Header({ navigation, settings }: HeaderProps) {
                       href={getHref(item)}
                       target={item.openInNewTab ? '_blank' : undefined}
                       rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
-                      className="block py-2 hover:opacity-70 transition-opacity"
+                      className="block py-2 text-sm uppercase tracking-[0.08em] text-[var(--foreground)] transition-colors duration-[var(--transition-medium)] hover:text-[var(--accent-warm)]"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.label}
@@ -177,7 +177,7 @@ export default function Header({ navigation, settings }: HeaderProps) {
                     // Internal link - use Next.js <Link>
                     <Link
                       href={getHref(item)}
-                      className="block py-2 hover:opacity-70 transition-opacity"
+                      className="block py-2 text-sm uppercase tracking-[0.08em] text-[var(--foreground)] transition-colors duration-[var(--transition-medium)] hover:text-[var(--accent-warm)]"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       {item.label}
@@ -185,16 +185,6 @@ export default function Header({ navigation, settings }: HeaderProps) {
                   )}
                 </li>
               ))}
-              {/* Contact Link */}
-              <li>
-                <Link
-                  href="/contact"
-                  className="block py-2 hover:opacity-70 transition-opacity"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Contact
-                </Link>
-              </li>
             </ul>
           </nav>
         )}

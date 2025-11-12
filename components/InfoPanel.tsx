@@ -41,7 +41,7 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="hidden md:block fixed right-0 top-0 bottom-0 w-80 lg:w-96 bg-black/90 backdrop-blur-sm text-white overflow-y-auto z-50"
+            className="hidden md:block fixed right-0 top-0 bottom-0 w-80 lg:w-96 bg-dark/90 backdrop-blur-sm text-light overflow-y-auto z-50"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6 lg:p-8 space-y-6">
@@ -109,7 +109,7 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
       onClick={() => {
         closeLightbox();
       }}
-      className="inline-block px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm text-gray-200 transition-colors"
+      className="inline-block px-3 py-1 bg-light/10 hover:bg-light/20 rounded-full text-sm text-gray-200 transition-colors"
     >
       #{tagName}
     </Link>
@@ -143,7 +143,7 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="md:hidden fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-sm text-white overflow-y-auto z-50"
+            className="md:hidden fixed bottom-0 left-0 right-0 bg-dark/95 backdrop-blur-sm text-light overflow-y-auto z-50"
             style={{ maxHeight: '60vh' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -210,7 +210,7 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
                         <Link
                           key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
                           href={href}
-                          className="inline-block px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm text-gray-200 transition-colors"
+                          className="inline-block px-3 py-1 bg-light/10 hover:bg-light/20 rounded-full text-sm text-gray-200 transition-colors"
                         >
                           #{tagName}
                         </Link>

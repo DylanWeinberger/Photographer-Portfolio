@@ -107,7 +107,7 @@ export default function Lightbox() {
           {/* Top Controls Bar */}
           <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4 md:p-6">
             {/* Photo Counter */}
-            <div className="text-white text-sm md:text-base font-medium">
+            <div className="text-light text-sm md:text-base font-medium">
               {currentIndex + 1} / {photos.length}
             </div>
 
@@ -119,7 +119,7 @@ export default function Lightbox() {
                 className={`p-2 md:p-2.5 rounded-lg transition-all ${
                   showInfo
                     ? 'bg-white text-black'
-                    : 'text-white hover:bg-white/10'
+                    : 'text-light hover:bg-white/10'
                 }`}
                 aria-label="Toggle photo information"
                 aria-pressed={showInfo}
@@ -142,7 +142,7 @@ export default function Lightbox() {
               {/* Close Button */}
               <button
                 onClick={closeLightbox}
-                className="text-white hover:text-gray-300 transition-colors p-2"
+                className="text-light hover:text-gray-300 transition-colors p-2"
                 aria-label="Close lightbox"
               >
                 <svg
@@ -209,7 +209,7 @@ export default function Lightbox() {
                   e.stopPropagation()
                   prevPhoto()
                 }}
-                className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-50 text-white hover:text-gray-300 transition-colors p-2 md:p-3 bg-black/30 hover:bg-black/50 rounded-full"
+                className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-50 text-light hover:text-gray-300 transition-colors p-2 md:p-3 bg-black/30 hover:bg-black/50 rounded-full"
                 aria-label="Previous photo"
               >
                 <svg
@@ -233,7 +233,7 @@ export default function Lightbox() {
                   e.stopPropagation()
                   nextPhoto()
                 }}
-                className="absolute top-1/2 -translate-y-1/2 z-50 text-white hover:text-gray-300 transition-all p-2 md:p-3 bg-black/30 hover:bg-black/50 rounded-full"
+                className="absolute top-1/2 -translate-y-1/2 z-50 text-light hover:text-gray-300 transition-all p-2 md:p-3 bg-black/30 hover:bg-black/50 rounded-full"
                 style={{
                   right: showInfo ? 'calc(20rem + 1.5rem)' : '0.5rem',
                   transition: 'right 0.3s ease-out',
@@ -259,7 +259,7 @@ export default function Lightbox() {
 
           {/* Watermark Overlay (subtle) */}
           {currentPhoto.watermarkEnabled && (
-            <div className="absolute bottom-8 right-8 text-white/30 text-xs md:text-sm pointer-events-none select-none">
+            <div className="absolute bottom-8 right-8 text-light/30 text-xs md:text-sm pointer-events-none select-none">
               © All Rights Reserved
             </div>
           )}

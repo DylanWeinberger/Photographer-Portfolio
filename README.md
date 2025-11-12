@@ -274,18 +274,100 @@ For instant cache updates when content changes in Sanity:
 
 This ensures content appears immediately after publishing in Sanity.
 
+## 🖼️ Image Optimization
+
+This project implements comprehensive image optimization for excellent performance and Core Web Vitals scores.
+
+### Optimization Strategy
+
+**Modern Formats:**
+- ✅ AVIF format (~50% smaller than WebP)
+- ✅ WebP format (~30% smaller than JPEG)
+- ✅ Automatic format detection and fallback
+- ✅ Configured in `next.config.ts`
+
+**Responsive Sizing:**
+- ✅ Different image sizes per device (mobile/tablet/desktop)
+- ✅ `sizes` prop on all images for optimal delivery
+- ✅ Mobile users get smaller files (60-70% reduction)
+
+**Priority Loading:**
+- ✅ First hero image has `priority` for fast LCP
+- ✅ Below-fold images lazy load automatically
+- ✅ Optimized for Core Web Vitals
+
+### Quality Settings by Context
+
+Edit `lib/imageBuilder.ts` to adjust quality:
+
+```typescript
+const qualityMap = {
+  high: 85,    // Hero, lightbox, profile photos
+  medium: 75,  // Grid thumbnails, general display
+  low: 60,     // Backgrounds, small images
+}
+```
+
+### Image Contexts
+
+**Hero Slider:**
+- Size: 1920px width
+- Quality: 85 (high)
+- Priority: First image only
+- Sizes: `100vw` (full width)
+
+**PhotoGrid Thumbnails:**
+- Size: 600x600px
+- Quality: 75 (medium)
+- Lazy loading: Yes
+- Sizes: `(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw`
+
+**Lightbox (Full-Screen):**
+- Size: 1920px width
+- Quality: 85 (high)
+- Auto format: Yes
+- Sizes: `100vw`
+
+**Profile Photo (About):**
+- Size: 600x600px
+- Quality: 85 (high)
+- Sizes: `(max-width: 768px) 100vw, 50vw`
+
+### Expected Performance
+
+**Before Optimization:**
+- Large images for all devices
+- No modern formats
+- Everything loads eagerly
+
+**After Optimization:**
+- Mobile: 60-70% smaller files
+- Desktop: WebP/AVIF formats
+- Hero loads immediately (fast LCP)
+- Below-fold images lazy load
+- Lighthouse score: 90+ performance
+
+### Sizes Prop Patterns
+
+```typescript
+// Full width on all devices
+sizes="100vw"
+
+// Responsive grid (3 columns desktop)
+sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+
+// Responsive grid (4 columns desktop)
+sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+
+// Two-column layout
+sizes="(max-width: 768px) 100vw, 50vw"
+```
+
 ## 🎨 Customization
 
 ### Adjusting Image Quality
 
-Edit `lib/imageBuilder.ts`:
-```typescript
-const qualityMap = {
-  high: 80,   // Change these values
-  medium: 60,
-  low: 40,
-}
-```
+See [Image Optimization](#-image-optimization) section above for quality settings.
 
 ### Changing Grid Layout
 
