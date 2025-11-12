@@ -100,14 +100,14 @@ export default function Hero({ hero }: HeroProps) {
         </div>
       </div>
 
-      {/* Subtle overlay gradient for text readability - more refined */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
+      {/* Dark overlay for text readability - more opaque for better contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
 
       {/* Content overlay - Playfair Display for dramatic typography */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="max-w-6xl mx-auto px-6 md:px-20 lg:px-24 text-center">
           {/* Hero headline - Large, elegant Playfair Display */}
-          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight leading-[1.1] animate-fade-in">
+          <h1 className="font-ibm text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight leading-[1.1] animate-fade-in">
             {hero.headline}
           </h1>
 

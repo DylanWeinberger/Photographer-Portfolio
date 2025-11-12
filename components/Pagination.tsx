@@ -1,5 +1,16 @@
+/**
+ * Pagination Component
+ *
+ * Minimal, almost invisible pagination for fine art aesthetic.
+ * Design philosophy:
+ * - Subtle presence
+ * - Clear current page
+ * - Slow hover transitions (0.4s)
+ * - Editorial typography
+ * - Functional, not decorative
+ */
+
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface PaginationProps {
   currentPage: number
@@ -65,52 +76,50 @@ export default function Pagination({
 
   return (
     <nav
-      className="flex items-center justify-center gap-2 py-8"
+      className="flex items-center justify-center gap-6 md:gap-8 py-16 md:py-20"
       aria-label="Pagination"
     >
-      {/* Previous Button */}
+      {/* Previous Button - Minimal text link */}
       {currentPage > 1 ? (
         <Link
           href={getPageUrl(currentPage - 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-700 bg-white border border-dark-300 rounded-lg hover:bg-dark-50 transition-colors"
+          className="text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)] transition-colors duration-[var(--transition-fast)] hover:text-[var(--foreground)] data-cursor='link'"
           aria-label="Previous page"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
+          ← Previous
         </Link>
       ) : (
-        <button
-          disabled
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-400 bg-dark-100 border border-dark-200 rounded-lg cursor-not-allowed"
+        <span
+          className="text-sm uppercase tracking-[0.15em] text-[var(--border)] cursor-not-allowed"
           aria-label="Previous page"
           aria-disabled="true"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
-        </button>
+          ← Previous
+        </span>
       )}
 
-      {/* Page Numbers */}
-      <div className="flex items-center gap-1">
+      {/* Page Numbers - Minimal, subtle */}
+      <div className="flex items-center gap-3 md:gap-4">
         {pageNumbers.map((page, index) =>
           page === '...' ? (
             <span
               key={`ellipsis-${index}`}
-              className="px-3 py-2 text-sm font-medium text-dark-500"
+              className="text-sm text-[var(--subtle-text)]"
             >
-              ...
+              ···
             </span>
           ) : (
             <Link
               key={page}
               href={getPageUrl(page as number)}
-              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`text-sm transition-colors duration-[var(--transition-fast)] ${
                 currentPage === page
-                  ? 'bg-dark-900 text-light'
-                  : 'text-dark-700 bg-light border border-dark-300 hover:bg-dark-50'
+                  ? 'text-[var(--foreground)] font-medium'
+                  : 'text-[var(--subtle-text)] hover:text-[var(--foreground)]'
               }`}
               aria-label={`Go to page ${page}`}
               aria-current={currentPage === page ? 'page' : undefined}
+              data-cursor="link"
             >
               {page}
             </Link>
@@ -118,26 +127,24 @@ export default function Pagination({
         )}
       </div>
 
-      {/* Next Button */}
+      {/* Next Button - Minimal text link */}
       {currentPage < totalPages ? (
         <Link
           href={getPageUrl(currentPage + 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-700 bg-white border border-dark-300 rounded-lg hover:bg-dark-50 transition-colors"
+          className="text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)] transition-colors duration-[var(--transition-fast)] hover:text-[var(--foreground)]"
           aria-label="Next page"
+          data-cursor="link"
         >
-          <span className="hidden sm:inline">Next</span>
-          <ChevronRight className="w-4 h-4" />
+          Next →
         </Link>
       ) : (
-        <button
-          disabled
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-dark-400 bg-dark-100 border border-dark-200 rounded-lg cursor-not-allowed"
+        <span
+          className="text-sm uppercase tracking-[0.15em] text-[var(--border)] cursor-not-allowed"
           aria-label="Next page"
           aria-disabled="true"
         >
-          <span className="hidden sm:inline">Next</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
+          Next →
+        </span>
       )}
     </nav>
   )

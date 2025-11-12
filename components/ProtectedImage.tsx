@@ -63,6 +63,7 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
         onContextMenu={handleContextMenu}
         onDragStart={handleDragStart}
         onClick={onClick}
+        data-cursor="image"
         className={`relative aspect-[4/5] overflow-hidden image-border ${
           onClick ? 'cursor-pointer' : 'cursor-default'
         }`}

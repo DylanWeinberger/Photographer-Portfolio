@@ -82,7 +82,7 @@ body {
  */
 
 h1, h2, h3, h4, h5, h6, .playfair {
-  font-family: var(--font-playfair);
+  font-family: var(--font-ibm-plex-sans);
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 1.2;

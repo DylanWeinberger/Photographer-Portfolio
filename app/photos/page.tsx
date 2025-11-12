@@ -73,28 +73,27 @@ export default async function PhotosPage({ searchParams }: PageProps) {
   const endRange = Math.min(page * PHOTOS_PER_PAGE, total)
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 font-playfair">
-            Photo Gallery
+    <div className="min-h-screen bg-[var(--background)]">
+      {/* Page Header - Minimal, elegant */}
+      <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
+          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight">
+            Photography
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)]">
             {total > 0 ? (
               <>
-                Showing {startRange}–{endRange} of {total} photo
-                {total === 1 ? '' : 's'}
+                {startRange}–{endRange} of {total} Photograph{total === 1 ? '' : 's'}
               </>
             ) : (
-              'Building your photography portfolio'
+              'Collection'
             )}
           </p>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Main Content - Generous spacing */}
+      <main className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 py-20 md:py-28 lg:py-32">
         {photos.length > 0 ? (
           <>
             <PhotoGrid photos={photos} />
@@ -105,10 +104,10 @@ export default async function PhotosPage({ searchParams }: PageProps) {
             />
           </>
         ) : (
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6">
               <svg
-                className="w-8 h-8 text-gray-400"
+                className="w-8 h-8 text-[var(--subtle-text)]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -121,11 +120,11 @@ export default async function PhotosPage({ searchParams }: PageProps) {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
-              No photos yet
+            <h3 className="font-playfair text-2xl font-normal text-[var(--foreground)] mb-2">
+              No photographs yet
             </h3>
-            <p className="text-gray-500">
-              Add some photos in Sanity Studio to see them here.
+            <p className="text-[var(--subtle-text)] text-sm">
+              Add photographs in Sanity Studio to begin your collection.
             </p>
           </div>
         )}

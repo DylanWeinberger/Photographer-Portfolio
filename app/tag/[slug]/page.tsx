@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { client } from '@/sanity/lib/client'
 import { tagBySlugQuery, paginatedTagPhotosQuery } from '@/lib/queries'
-import { getColorSchemeStyles } from '@/lib/colorSchemes'
 import { getFullImageUrl } from '@/lib/imageBuilder'
 import type { Tag, Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
@@ -14,8 +13,8 @@ import Pagination from '@/components/Pagination'
  * - Tag information (header, subheader, description)
  * - Optional hero image
  * - Paginated photos tagged with this tag
- * - Custom color scheme
- * - Custom layout (grid-3, grid-4, masonry)
+ * - Dark theme styling
+ * - Custom layout (rows2 or masonry)
  *
  * This approach combines tag-based organization with page-like customization.
  */
@@ -138,26 +137,23 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const startRange = (page - 1) * PHOTOS_PER_PAGE + 1
   const endRange = Math.min(page * PHOTOS_PER_PAGE, total)
 
-  // Get color scheme styles
-  const colors = getColorSchemeStyles(tagData.colorScheme)
+  // Normalize layout preference - convert old values to new format
+  const normalizedLayout =
+    tagData.layout && ['grid-3', 'grid-4'].includes(tagData.layout)
+      ? 'rows2'
+      : (tagData.layout || 'rows2')
 
   // Determine header and subheader text
   const headerText = tagData.headerText || tagData.displayName || tagData.name
   const subheaderText = tagData.subheader
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundColor: colors.backgroundColor,
-        color: colors.textColor,
-      }}
-    >
-      {/* Hero Image (if provided) */}
+    <div className="min-h-screen bg-[var(--background)]">
+      {/* Hero Image (if provided) - Full width, subtle presentation */}
       {tagData.heroImage && (
-        <div className="w-full">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="relative w-full h-64 md:h-96 lg:h-[32rem] rounded-lg overflow-hidden">
+        <div className="w-full pt-20 md:pt-24">
+          <div className="max-w-[1800px] mx-auto px-6 md:px-20 lg:px-24">
+            <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden image-border">
               <img
                 src={getFullImageUrl(tagData.heroImage.image, tagData.heroImage.displayQuality)}
                 alt={tagData.heroImage.altText || tagData.heroImage.title}
@@ -168,40 +164,39 @@ export default async function TagPage({ params, searchParams }: PageProps) {
         </div>
       )}
 
-      {/* Header Section */}
-      <header className="border-b" style={{ borderColor: `${colors.textColor}20` }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+      {/* Header Section - Generous spacing, editorial layout */}
+      <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
+          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight">
             {headerText}
           </h1>
           {subheaderText && (
-            <p className="text-xl md:text-2xl opacity-80 mb-4">
+            <p className="text-lg md:text-xl text-[var(--foreground)] opacity-80 mb-6 md:mb-8 max-w-3xl mx-auto font-light tracking-wide">
               {subheaderText}
             </p>
           )}
           {tagData.description && (
-            <p className="text-base md:text-lg opacity-70 max-w-3xl">
+            <p className="text-base md:text-lg text-[var(--foreground)] opacity-70 max-w-2xl mx-auto leading-relaxed">
               {tagData.description}
             </p>
           )}
-          <p className="mt-4 text-sm opacity-60">
+          <p className="mt-8 text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)]">
             {total > 0 ? (
               <>
-                Showing {startRange}–{endRange} of {total} photo
-                {total === 1 ? '' : 's'}
+                {startRange}–{endRange} of {total} Photograph{total === 1 ? '' : 's'}
               </>
             ) : (
-              '0 photos'
+              'Collection'
             )}
           </p>
         </div>
       </header>
 
-      {/* Photos Grid */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Photos Grid - Generous spacing */}
+      <main className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 py-20 md:py-28 lg:py-32">
         {photos.length > 0 ? (
           <>
-            <PhotoGrid photos={photos} />
+            <PhotoGrid photos={photos} layout={normalizedLayout as 'rows2' | 'masonry'} />
             <Pagination
               currentPage={page}
               totalPages={totalPages}
@@ -209,14 +204,10 @@ export default async function TagPage({ params, searchParams }: PageProps) {
             />
           </>
         ) : (
-          <div className="text-center py-12">
-            <div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
-              style={{ backgroundColor: `${colors.textColor}10` }}
-            >
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 bg-[var(--surface)]">
               <svg
-                className="w-8 h-8"
-                style={{ color: colors.textColor, opacity: 0.4 }}
+                className="w-8 h-8 text-[var(--subtle-text)] opacity-40"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -229,9 +220,9 @@ export default async function TagPage({ params, searchParams }: PageProps) {
                 />
               </svg>
             </div>
-            <h3 className="text-lg font-medium mb-1">No photos yet</h3>
-            <p style={{ opacity: 0.6 }}>
-              Photos tagged with &quot;{tagData.name}&quot; will appear here.
+            <h3 className="font-playfair text-2xl font-normal text-[var(--foreground)] mb-2">No photographs in this collection</h3>
+            <p className="text-sm text-[var(--subtle-text)]">
+              Photographs tagged with &quot;{tagData.name}&quot; will appear here.
             </p>
           </div>
         )}

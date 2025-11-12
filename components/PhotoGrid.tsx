@@ -7,6 +7,10 @@
  * - 2 columns max for impact (not 3)
  * - Subtle borders on images
  * - Slow hover effects
+ *
+ * Supports two layouts:
+ * - rows2: Clean 2-column grid with equal widths and heights
+ * - masonry: True masonry layout where items pack naturally by height
  */
 
 'use client'
@@ -14,12 +18,14 @@
 import type { Photo } from '@/types/sanity'
 import ProtectedImage from './ProtectedImage'
 import { useLightbox } from '@/contexts/LightboxContext'
+import Masonry from 'react-masonry-css'
 
 interface PhotoGridProps {
   photos: Photo[]
+  layout?: 'rows2' | 'masonry'
 }
 
-export default function PhotoGrid({ photos }: PhotoGridProps) {
+export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) {
   const { openLightbox } = useLightbox()
 
   // Handle empty state
@@ -51,8 +57,79 @@ export default function PhotoGrid({ photos }: PhotoGridProps) {
     )
   }
 
+  // Render based on layout type
+  if (layout === 'masonry') {
+    // Breakpoint configuration for masonry
+    const breakpointColumns = {
+      default: 2, // Desktop: 2 columns
+      1023: 2,    // Tablet: 2 columns
+      767: 1      // Mobile: 1 column
+    }
+
+    return (
+      <>
+        <style jsx global>{`
+          .masonry-grid {
+            display: flex;
+            margin-left: -40px; /* gutter size offset */
+            width: auto;
+          }
+          .masonry-grid-column {
+            padding-left: 40px; /* gutter size */
+            background-clip: padding-box;
+          }
+          .masonry-grid-column > div {
+            margin-bottom: 40px;
+          }
+
+          /* Tablet and up */
+          @media (min-width: 768px) {
+            .masonry-grid {
+              margin-left: -60px;
+            }
+            .masonry-grid-column {
+              padding-left: 60px;
+            }
+            .masonry-grid-column > div {
+              margin-bottom: 60px;
+            }
+          }
+
+          /* Desktop and up */
+          @media (min-width: 1024px) {
+            .masonry-grid {
+              margin-left: -80px;
+            }
+            .masonry-grid-column {
+              padding-left: 80px;
+            }
+            .masonry-grid-column > div {
+              margin-bottom: 80px;
+            }
+          }
+        `}</style>
+        <Masonry
+          breakpointCols={breakpointColumns}
+          className="masonry-grid"
+          columnClassName="masonry-grid-column"
+        >
+          {photos.map((photo, index) => (
+            <div key={photo._id}>
+              <ProtectedImage
+                photo={photo}
+                priority={index < 2}
+                onClick={() => openLightbox(photos, index)}
+              />
+            </div>
+          ))}
+        </Masonry>
+      </>
+    )
+  }
+
+  // Default: rows2 layout (2-column grid)
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
       {photos.map((photo, index) => (
         <ProtectedImage
           key={photo._id}

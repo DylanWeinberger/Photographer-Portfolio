@@ -110,16 +110,15 @@ export const tagType = defineType({
       name: 'layout',
       title: 'Photo Grid Layout',
       type: 'string',
-      description: 'How photos are displayed on this tag page',
+      description: '2-Column Grid: Clean, gallery-like with generous spacing. Masonry: Organic flow that respects natural image ratios.',
       options: {
         list: [
-          { title: 'Grid - 3 Columns', value: 'grid-3' },
-          { title: 'Grid - 4 Columns', value: 'grid-4' },
-          { title: 'Masonry (Pinterest style)', value: 'masonry' }
+          { title: '2-Column Grid', value: 'rows2' },
+          { title: 'Masonry Layout', value: 'masonry' }
         ],
         layout: 'radio'
       },
-      initialValue: 'grid-3',
+      initialValue: 'rows2',
     }),
 
     /**
