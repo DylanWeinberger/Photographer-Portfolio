@@ -4,6 +4,7 @@ import type { Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
 import Pagination from '@/components/Pagination'
 import { Metadata } from 'next'
+import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib/metadata'
 
 /**
  * Photos Page - Server Component with Pagination
@@ -16,7 +17,7 @@ import { Metadata } from 'next'
 const PHOTOS_PER_PAGE = 24
 
 interface PageProps {
-  searchParams: { page?: string }
+  searchParams: Promise<{ page?: string }>
 }
 
 async function getPaginatedPhotos(page: number): Promise<{
@@ -39,27 +40,64 @@ async function getPaginatedPhotos(page: number): Promise<{
   }
 }
 
-export async function generateMetadata({
-  searchParams,
-}: PageProps): Promise<Metadata> {
-  const page = Number(searchParams.page) || 1
+/**
+ * Static metadata for photos page
+ *
+ * Note: We use static metadata here to allow the page to be pre-rendered.
+ * Accessing searchParams in generateMetadata would make the route dynamic
+ * and prevent static generation during build.
+ *
+ * The metadata is SEO-friendly and works for all paginated pages.
+ * Dynamic content (page numbers, photo counts) is rendered in the page itself.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    // Fetch first page of photos to get total count and latest image
+    const result = await client.fetch<{ photos: Photo[]; total: number }>(
+      paginatedPhotosQuery,
+      { start: 0, end: PHOTOS_PER_PAGE }
+    )
 
-  if (page === 1) {
-    return {
+    const { photos, total } = result
+
+    // Get latest photo date for freshness indication
+    const latestPhotoDate = photos.length > 0 && photos[0]._createdAt
+      ? new Date(photos[0]._createdAt).toLocaleDateString('en-US', {
+          month: 'long',
+          year: 'numeric',
+        })
+      : null
+
+    // Create description with photo count and latest additions
+    const photoCountText = total === 1 ? '1 photograph' : `${total} photographs`
+    const freshnessText = latestPhotoDate ? ` Latest additions from ${latestPhotoDate}.` : ''
+
+    const description = `Browse my complete photography portfolio featuring ${photoCountText}.${freshnessText}`
+
+    // Get Open Graph image from first photo
+    const ogImage = photos.length > 0 ? getOGImageUrl(photos[0].image) : undefined
+
+    return createMetadata({
       title: 'Photo Gallery',
-      description: 'Browse my photography portfolio',
-    }
-  }
-
-  return {
-    title: `Photo Gallery - Page ${page}`,
-    description: `Browse my photography portfolio - Page ${page}`,
+      description,
+      image: ogImage,
+      path: '/photos',
+    })
+  } catch (error) {
+    console.error('Error generating photos page metadata:', error)
+    // Fallback metadata
+    return createMetadata({
+      title: 'Photo Gallery',
+      description: 'Browse my complete photography portfolio showcasing fine art and editorial work.',
+      path: '/photos',
+    })
   }
 }
 
 export default async function PhotosPage({ searchParams }: PageProps) {
   // Parse and validate page number
-  const rawPage = searchParams.page
+  const params = await searchParams
+  const rawPage = params.page
   const page = Math.max(1, Number(rawPage) || 1)
 
   // Fetch paginated photos
@@ -72,8 +110,20 @@ export default async function PhotosPage({ searchParams }: PageProps) {
   const startRange = (page - 1) * PHOTOS_PER_PAGE + 1
   const endRange = Math.min(page * PHOTOS_PER_PAGE, total)
 
+  // Generate JSON-LD structured data for page 1
+  const jsonLd = page === 1 && photos.length > 0
+    ? generateImageGalleryJsonLd(photos, 'Photo Gallery', 'Complete photography portfolio')
+    : null
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      {/* JSON-LD Structured Data for SEO */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {/* Page Header - Minimal, elegant */}
       <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
         <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">

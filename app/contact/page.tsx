@@ -3,10 +3,34 @@ import ContactForm from '@/components/ContactForm'
 import { client } from '@/sanity/lib/client'
 import { settingsQuery } from '@/lib/queries'
 import type { Settings } from '@/types/sanity'
+import { createMetadata } from '@/lib/metadata'
 
-export const metadata: Metadata = {
-  title: 'Contact',
-  description: 'Contact Henry Jaffe Photography.',
+/**
+ * Generate metadata for contact page
+ * Includes structured data for LocalBusiness/ContactPoint
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const settings = await client.fetch<Settings>(settingsQuery)
+
+    const description = settings?.siteDescription
+      ? `Get in touch with ${settings.siteTitle}. ${settings.siteDescription}`
+      : 'Get in touch to discuss photography projects, collaborations, or inquiries. Available for commissions and editorial work.'
+
+    return createMetadata({
+      title: 'Contact',
+      description,
+      path: '/contact',
+    })
+  } catch (error) {
+    console.error('Error generating contact page metadata:', error)
+    // Fallback metadata
+    return createMetadata({
+      title: 'Contact',
+      description: 'Get in touch to discuss photography projects, collaborations, or inquiries.',
+      path: '/contact',
+    })
+  }
 }
 
 async function getSettings(): Promise<Settings | null> {
@@ -22,8 +46,34 @@ async function getSettings(): Promise<Settings | null> {
 export default async function ContactPage() {
   const settings = await getSettings()
 
+  // Generate JSON-LD structured data for contact page
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact',
+    description: 'Contact page for photography inquiries and commissions',
+    mainEntity: {
+      '@type': 'Person',
+      name: settings?.siteTitle || 'Henry Jaffe Photography',
+      jobTitle: 'Photographer',
+      ...(settings?.socialLinks?.email && {
+        email: settings.socialLinks.email,
+      }),
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'Customer Service',
+        availableLanguage: 'English',
+      },
+    },
+  }
+
   return (
     <div className="min-h-screen bg-[var(--background)] pt-28 md:pt-36 lg:pt-40 pb-20 md:pb-28 lg:pb-32 px-6 md:px-20 lg:px-24">
+      {/* JSON-LD Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-4xl mx-auto">
         {/* Page Header - Minimal, elegant */}
         <div className="text-center mb-16 md:mb-20">

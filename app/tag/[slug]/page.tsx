@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { tagBySlugQuery, paginatedTagPhotosQuery } from '@/lib/queries'
 import { getFullImageUrl } from '@/lib/imageBuilder'
 import type { Tag, Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
 import Pagination from '@/components/Pagination'
+import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib/metadata'
 
 /**
  * TAG PAGE - Dynamic Route with Pagination
@@ -81,33 +83,64 @@ async function getPaginatedTagPhotos(slug: string, page: number): Promise<{
 }
 
 /**
- * Generate metadata for SEO
+ * Generate comprehensive metadata for SEO
+ *
+ * Note: We use static metadata (based only on params, not searchParams)
+ * to allow the page to be pre-rendered. Accessing searchParams would make
+ * the route dynamic and prevent static generation during build.
+ *
+ * The metadata works for all paginated pages of a tag collection.
  */
-export async function generateMetadata({ params, searchParams }: PageProps) {
-  const { slug } = await params
-  const tagData = await getTagData(slug)
-  const { page: pageParam } = await searchParams
-  const page = Number(pageParam) || 1
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const { slug } = await params
+    const tagData = await getTagData(slug)
 
-  if (!tagData) {
-    return {
-      title: 'Tag Not Found',
+    if (!tagData) {
+      return {
+        title: 'Tag Not Found',
+        description: 'The requested collection could not be found.',
+      }
     }
-  }
 
-  const title = tagData.displayName || tagData.name
-  const description = tagData.description || `View all ${tagData.name} photos`
+    // Fetch first page of photos to get count and images for OG
+    const { photos, total } = await client.fetch<{ photos: Photo[]; total: number }>(
+      paginatedTagPhotosQuery,
+      { slug, start: 0, end: PHOTOS_PER_PAGE }
+    )
 
-  if (page === 1) {
-    return {
-      title: `${title} | Photographer Portfolio`,
+    // Build title from tag data
+    const title = tagData.displayName || tagData.headerText || tagData.name
+
+    // Build description with photo count
+    const photoCountText = total === 1 ? '1 photograph' : `${total} photographs`
+    const description = tagData.description ||
+      `Explore ${photoCountText} in the ${tagData.name} collection.`
+
+    // Get Open Graph image - priority: hero image, first photo, fallback
+    let ogImage: string | undefined
+    if (tagData.heroImage?.image) {
+      ogImage = getOGImageUrl(tagData.heroImage.image)
+    } else if (photos.length > 0) {
+      ogImage = getOGImageUrl(photos[0].image)
+    }
+
+    return createMetadata({
+      title,
       description,
-    }
-  }
+      image: ogImage,
+      path: `/tag/${slug}`,
+    })
+  } catch (error) {
+    console.error('Error generating tag page metadata:', error)
+    const { slug } = await params
 
-  return {
-    title: `${title} - Page ${page} | Photographer Portfolio`,
-    description: `${description} - Page ${page}`,
+    // Fallback metadata
+    return createMetadata({
+      title: 'Photo Collection',
+      description: 'Browse this photography collection',
+      path: `/tag/${slug}`,
+    })
   }
 }
 
@@ -147,8 +180,24 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const headerText = tagData.headerText || tagData.displayName || tagData.name
   const subheaderText = tagData.subheader
 
+  // Generate JSON-LD structured data for page 1
+  const jsonLd = page === 1 && photos.length > 0
+    ? generateImageGalleryJsonLd(
+        photos,
+        headerText,
+        tagData.description || tagData.subheader
+      )
+    : null
+
   return (
     <div className="min-h-screen bg-[var(--background)]">
+      {/* JSON-LD Structured Data for SEO */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       {/* Hero Image (if provided) - Full width, subtle presentation */}
       {tagData.heroImage && (
         <div className="w-full pt-20 md:pt-24">

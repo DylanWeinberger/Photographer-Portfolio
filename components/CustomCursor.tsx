@@ -46,8 +46,8 @@ export default function CustomCursor() {
     if (!cursorDotRef.current || !cursorRingRef.current) return
 
     // Lerp (linear interpolation) for smooth following
-    const lerpDot = 0.15 // Fast following for dot
-    const lerpRing = 0.08 // Slower following for ring (trailing effect)
+        const lerpDot = 1   // was 0.15 (faster)
+    const lerpRing = 1  // was 0.08 (faster)
 
     // Update dot position (fast)
     cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * lerpDot

@@ -77,6 +77,8 @@ export default function Hero({ hero }: HeroProps) {
             // - quality: 90 (hero images demand highest quality)
             // - auto('format'): enables WebP/AVIF for modern browsers
             // - priority: only first image (critical for LCP)
+            // - loading='eager': prevents lazy-loading of first image (LCP optimization)
+            // - fetchPriority='high': browser prioritizes first image download (LCP optimization)
             // - sizes: 100vw (hero is full width on all devices)
             const imageUrl = urlFor(photo.image)
               .width(2400)
@@ -91,6 +93,8 @@ export default function Hero({ hero }: HeroProps) {
                   alt={photo.altText || photo.title}
                   fill
                   priority={index === 0} // Only prioritize first image for LCP
+                  loading={index === 0 ? 'eager' : 'lazy'} // LCP optimization: eager load first image
+                  fetchPriority={index === 0 ? 'high' : 'auto'} // LCP optimization: high priority for first image
                   className="object-cover animate-image-fade-in"
                   sizes="100vw"
                 />

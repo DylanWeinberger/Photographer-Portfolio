@@ -59,70 +59,20 @@ export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) 
 
   // Render based on layout type
   if (layout === 'masonry') {
-    // Breakpoint configuration for masonry
-    const breakpointColumns = {
-      default: 2, // Desktop: 2 columns
-      1023: 2,    // Tablet: 2 columns
-      767: 1      // Mobile: 1 column
-    }
+    
 
     return (
       <>
-        <style jsx global>{`
-          .masonry-grid {
-            display: flex;
-            margin-left: -40px; /* gutter size offset */
-            width: auto;
-          }
-          .masonry-grid-column {
-            padding-left: 40px; /* gutter size */
-            background-clip: padding-box;
-          }
-          .masonry-grid-column > div {
-            margin-bottom: 40px;
-          }
-
-          /* Tablet and up */
-          @media (min-width: 768px) {
-            .masonry-grid {
-              margin-left: -60px;
-            }
-            .masonry-grid-column {
-              padding-left: 60px;
-            }
-            .masonry-grid-column > div {
-              margin-bottom: 60px;
-            }
-          }
-
-          /* Desktop and up */
-          @media (min-width: 1024px) {
-            .masonry-grid {
-              margin-left: -80px;
-            }
-            .masonry-grid-column {
-              padding-left: 80px;
-            }
-            .masonry-grid-column > div {
-              margin-bottom: 80px;
-            }
-          }
-        `}</style>
-        <Masonry
-          breakpointCols={breakpointColumns}
-          className="masonry-grid"
-          columnClassName="masonry-grid-column"
-        >
-          {photos.map((photo, index) => (
-            <div key={photo._id}>
-              <ProtectedImage
-                photo={photo}
-                priority={index < 2}
-                onClick={() => openLightbox(photos, index)}
-              />
-            </div>
-          ))}
-        </Masonry>
+            <div className="masonry-grid">
+      {photos.map((photo, index) => (
+        <ProtectedImage
+          key={photo._id}
+          photo={photo}
+          priority={index < 2} // Prioritize loading first 2 images
+          onClick={() => openLightbox(photos, index)}
+        />
+      ))}
+    </div>
       </>
     )
   }

@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
 import { homepageQuery, featuredPhotosQuery } from '@/lib/queries'
 import type { Homepage, Photo } from '@/types/sanity'
@@ -5,6 +6,7 @@ import Hero from '@/components/Hero'
 import FeaturedSection from '@/components/FeaturedSection'
 import PhotoGrid from '@/components/PhotoGrid'
 import About from '@/components/About'
+import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib/metadata'
 
 /**
  * Fetch homepage data from Sanity
@@ -56,8 +58,25 @@ export default async function Home() {
     )
   }
 
+  // Generate JSON-LD structured data for SEO
+  const jsonLd = featuredPhotos.length > 0
+    ? generateImageGalleryJsonLd(
+        featuredPhotos,
+        homepage.featuredSection?.heading || 'Featured Work',
+        homepage.featuredSection?.description
+      )
+    : null
+
   return (
     <>
+      {/* JSON-LD Structured Data for SEO */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+
       {/* Hero Section - Full width, edge-to-edge, dramatic */}
       <Hero hero={homepage.hero} />
 
@@ -77,10 +96,47 @@ export default async function Home() {
   )
 }
 
-// Generate metadata for the page
-export const metadata = {
-  title: 'Photographer Portfolio',
-  description: 'Professional photography portfolio',
+/**
+ * Generate dynamic metadata for homepage
+ * Uses featured photos for Open Graph images
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const [homepage, featuredPhotos] = await Promise.all([
+      client.fetch<Homepage>(homepageQuery),
+      client.fetch<Photo[]>(featuredPhotosQuery),
+    ])
+
+    // Use hero headline for title, or fallback to default
+    const title = homepage?.hero?.headline || 'Henry Jaffe Photography'
+    const description =
+      homepage?.hero?.subheadline ||
+      homepage?.featuredSection?.description ||
+      'Professional photography portfolio showcasing fine art and editorial work'
+
+    // Get Open Graph image from first featured photo or hero photo
+    let ogImage: string | undefined
+    if (featuredPhotos && featuredPhotos.length > 0) {
+      ogImage = getOGImageUrl(featuredPhotos[0].image)
+    } else if (homepage?.hero?.heroPhotos && homepage.hero.heroPhotos.length > 0) {
+      ogImage = getOGImageUrl(homepage.hero.heroPhotos[0].image)
+    }
+
+    return createMetadata({
+      title,
+      description,
+      image: ogImage,
+      path: '/',
+    })
+  } catch (error) {
+    console.error('Error generating homepage metadata:', error)
+    // Fallback metadata if Sanity fetch fails
+    return createMetadata({
+      title: 'Henry Jaffe Photography',
+      description: 'Professional photography portfolio showcasing fine art and editorial work',
+      path: '/',
+    })
+  }
 }
 
 // ISR: Revalidate every 1 hour (3600 seconds)

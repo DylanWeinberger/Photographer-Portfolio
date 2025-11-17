@@ -9,9 +9,10 @@ import { useState, useEffect } from 'react'
 interface InfoPanelProps {
   photo: Photo
   isOpen: boolean
+  onClose: () => void
 }
 
-export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
+export default function InfoPanel({ photo, isOpen, onClose }: InfoPanelProps) {
   const { closeLightbox } = useLightbox()
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
@@ -62,6 +63,29 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
             role="complementary"
             aria-label="Photo information panel"
           >
+            {/* Close Button */}
+            <div className="absolute top-6 right-6 z-10">
+              <button
+                onClick={onClose}
+                className="text-[var(--foreground)] opacity-50 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] p-2"
+                aria-label="Close info panel (press Escape)"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
             <div className="p-8 lg:p-10 space-y-8 lg:space-y-10">
               {/* Title - Playfair Display for editorial feel */}
               <div>
@@ -167,9 +191,28 @@ export default function InfoPanel({ photo, isOpen }: InfoPanelProps) {
             role="complementary"
             aria-label="Photo information panel"
           >
-            {/* Handle bar for visual affordance - Minimal */}
-            <div className="flex justify-center pt-4 pb-2">
+            {/* Handle bar and close button for visual affordance - Minimal */}
+            <div className="flex items-center justify-between pt-4 pb-2 px-6">
               <div className="w-10 h-0.5 bg-[var(--border)] opacity-50" />
+              <button
+                onClick={onClose}
+                className="text-[var(--foreground)] opacity-50 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] p-2 -mr-2"
+                aria-label="Close info panel"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
 
             <div className="p-6 sm:p-8 space-y-6">

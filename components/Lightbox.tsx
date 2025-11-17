@@ -296,7 +296,7 @@ export default function Lightbox() {
           )}
 
           {/* Info Panel */}
-          <InfoPanel photo={currentPhoto} isOpen={showInfo} />
+          <InfoPanel photo={currentPhoto} isOpen={showInfo} onClose={toggleInfo} />
         </motion.div>
       )}
     </AnimatePresence>
