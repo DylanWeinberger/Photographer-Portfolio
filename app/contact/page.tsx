@@ -77,7 +77,7 @@ export default async function ContactPage() {
       <div className="max-w-4xl mx-auto">
         {/* Page Header - Minimal, elegant */}
         <div className="text-center mb-16 md:mb-20">
-          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight">
+          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight animate-fadeInUp">
             Contact
           </h1>
           <p className="text-base md:text-lg text-[var(--foreground)]/70 max-w-2xl mx-auto font-light leading-relaxed">

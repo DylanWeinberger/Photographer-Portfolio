@@ -18,7 +18,6 @@
 import type { Photo } from '@/types/sanity'
 import ProtectedImage from './ProtectedImage'
 import { useLightbox } from '@/contexts/LightboxContext'
-import Masonry from 'react-masonry-css'
 
 interface PhotoGridProps {
   photos: Photo[]
@@ -57,22 +56,30 @@ export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) 
     )
   }
 
+  // Stagger delays for first 6 items only (gallery aesthetic - subtle entrance)
+  const getStaggerDelay = (index: number): string => {
+    const delays = ['', 'animate-delay-100', 'animate-delay-150', 'animate-delay-200', 'animate-delay-250', 'animate-delay-300']
+    return index < 6 ? delays[index] : ''
+  }
+
   // Render based on layout type
   if (layout === 'masonry') {
-    
-
     return (
       <>
-            <div className="masonry-grid">
-      {photos.map((photo, index) => (
-        <ProtectedImage
-          key={photo._id}
-          photo={photo}
-          priority={index < 2} // Prioritize loading first 2 images
-          onClick={() => openLightbox(photos, index)}
-        />
-      ))}
-    </div>
+        <div className="masonry-grid">
+          {photos.map((photo, index) => (
+            <div
+              key={photo._id}
+              className={`animate-fadeInUp ${getStaggerDelay(index)}`.trim()}
+            >
+              <ProtectedImage
+                photo={photo}
+                priority={index < 2}
+                onClick={() => openLightbox(photos, index)}
+              />
+            </div>
+          ))}
+        </div>
       </>
     )
   }
@@ -81,12 +88,16 @@ export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
       {photos.map((photo, index) => (
-        <ProtectedImage
+        <div
           key={photo._id}
-          photo={photo}
-          priority={index < 2} // Prioritize loading first 2 images
-          onClick={() => openLightbox(photos, index)}
-        />
+          className={`animate-fadeInUp ${getStaggerDelay(index)}`.trim()}
+        >
+          <ProtectedImage
+            photo={photo}
+            priority={index < 2}
+            onClick={() => openLightbox(photos, index)}
+          />
+        </div>
       ))}
     </div>
   )

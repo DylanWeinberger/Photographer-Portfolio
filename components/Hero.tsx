@@ -110,14 +110,14 @@ export default function Hero({ hero }: HeroProps) {
       {/* Content overlay - Playfair Display for dramatic typography */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="max-w-6xl mx-auto px-6 md:px-20 lg:px-24 text-center">
-          {/* Hero headline - Large, elegant Playfair Display */}
-          <h1 className="font-ibm text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight leading-[1.1] animate-fade-in">
+          {/* Hero headline - Large, elegant Playfair Display with delayed fade in */}
+          <h1 className="font-ibm text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight leading-[1.1] animate-fadeIn animate-delay-600">
             {hero.headline}
           </h1>
 
           {/* Subheadline - Lighter, more subtle */}
           {hero.subheadline && (
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[var(--foreground)]/90 mb-10 md:mb-12 max-w-3xl mx-auto font-light tracking-wide leading-relaxed animate-fade-in">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[var(--foreground)]/90 mb-10 md:mb-12 max-w-3xl mx-auto font-light tracking-wide leading-relaxed animate-fadeIn animate-delay-600">
               {hero.subheadline}
             </p>
           )}
@@ -126,7 +126,7 @@ export default function Hero({ hero }: HeroProps) {
           {hero.showCTA && hero.ctaText && hero.ctaLink && (
             <Link
               href={hero.ctaLink}
-              className="inline-block px-10 py-4 border border-[var(--foreground)] text-[var(--foreground)] text-sm uppercase tracking-[0.15em] transition-all duration-[var(--transition-medium)] hover:bg-[var(--foreground)] hover:text-[var(--background)] animate-fade-in"
+              className="inline-block px-10 py-4 border border-[var(--foreground)] text-[var(--foreground)] text-sm uppercase tracking-[0.15em] transition-all duration-[var(--transition-medium)] hover:bg-[var(--foreground)] hover:text-[var(--background)] animate-fadeIn animate-delay-600"
             >
               {hero.ctaText}
             </Link>

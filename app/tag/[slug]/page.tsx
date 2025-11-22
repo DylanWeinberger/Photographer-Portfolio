@@ -216,7 +216,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
       {/* Header Section - Generous spacing, editorial layout */}
       <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
         <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
-          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight">
+          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight animate-fadeInUp">
             {headerText}
           </h1>
           {subheaderText && (

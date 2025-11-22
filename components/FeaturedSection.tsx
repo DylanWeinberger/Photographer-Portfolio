@@ -11,6 +11,7 @@
  */
 
 import type { Homepage } from '@/types/sanity'
+import AnimateOnScroll from './AnimateOnScroll'
 
 type FeaturedSectionProps = {
   featuredSection: Homepage['featuredSection']
@@ -20,10 +21,12 @@ export default function FeaturedSection({ featuredSection }: FeaturedSectionProp
   return (
     <section className="py-24 md:py-32 lg:py-40 px-6 md:px-20 lg:px-24">
       <div className="max-w-4xl mx-auto text-center">
-        {/* Heading - Large Playfair Display */}
-        <h2 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-[var(--foreground)] mb-8 md:mb-10 tracking-tight">
-          {featuredSection.heading}
-        </h2>
+        {/* Heading - Large Playfair Display with fade in + rise animation */}
+        <AnimateOnScroll animation="fadeInUp">
+          <h2 className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-[var(--foreground)] mb-8 md:mb-10 tracking-tight">
+            {featuredSection.heading}
+          </h2>
+        </AnimateOnScroll>
 
         {/* Description - Subtle, airy */}
         {featuredSection.description && (

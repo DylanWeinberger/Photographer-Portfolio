@@ -60,6 +60,19 @@
   box-sizing: border-box;
 }
 
+/* Screen reader only - for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -125,9 +138,37 @@ h3 {
 }
 
 /**
- * ANIMATIONS - Slow and deliberate
+ * ANIMATIONS - Slow, deliberate, contemplative
+ *
+ * Philosophy: Gallery exhibition pace
+ * - Standard: 0.6-0.8s
+ * - Subtle movements only
+ * - Respect prefers-reduced-motion
  */
 
+/* Variant 1: Simple Fade In - For text, UI elements */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Variant 2: Fade In + Slight Rise - For headings, cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Legacy animation - keep for existing usage */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -148,12 +189,120 @@ h3 {
   }
 }
 
+/**
+ * Animation Classes - Apply to elements
+ */
+
+/* Simple fade - 0.6s duration */
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Fade + rise - 0.8s duration, more dramatic for headings */
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Legacy classes - keep for existing usage */
 .animate-fade-in {
   animation: fade-in 0.6s ease-out;
 }
 
 .animate-image-fade-in {
   animation: image-fade-in 0.8s ease-out;
+}
+
+/**
+ * Stagger Delays - For grid/list items
+ * Apply incrementally to first 6 items only
+ */
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-150 { animation-delay: 0.15s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-250 { animation-delay: 0.25s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-350 { animation-delay: 0.35s; }
+
+/* Hero text delay - appears after mount */
+.animate-delay-600 { animation-delay: 0.6s; }
+
+/**
+ * Accessibility - Respect user preferences
+ * If user prefers reduced motion, disable all animations
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-fadeIn,
+  .animate-fadeInUp,
+  .animate-fade-in,
+  .animate-image-fade-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Disable page transitions for reduced motion */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  /* Disable Framer Motion hover animations */
+  [data-framer-motion-hover],
+  [data-framer-motion-focus],
+  [data-framer-motion-tap] {
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/**
+ * PAGE TRANSITIONS
+ *
+ * Gallery aesthetic: Slow crossfade between routes (0.6s)
+ * Uses View Transitions API with CSS fallback
+ */
+
+/* Enable View Transitions API (Chromium browsers) */
+@supports (view-transition-name: none) {
+  /* Crossfade animation for page transitions */
+  ::view-transition-old(root) {
+    animation: 600ms ease-in-out both fade-out-transition;
+  }
+
+  ::view-transition-new(root) {
+    animation: 600ms ease-in-out both fade-in-transition;
+  }
+
+  /* Ensure smooth transition through dark background */
+  ::view-transition-group(root) {
+    animation-duration: 0.6s;
+    animation-timing-function: ease-in-out;
+  }
+
+  /* Prevent white flash - use dark background */
+  ::view-transition {
+    background-color: var(--background);
+  }
+
+  @keyframes fade-in-transition {
+    from { opacity: 0; }
+  }
+
+  @keyframes fade-out-transition {
+    to { opacity: 0; }
+  }
 }
 
 /**

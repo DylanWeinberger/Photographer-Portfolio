@@ -8,6 +8,7 @@ import Footer from '@/components/Footer'
 import Lightbox from '@/components/Lightbox'
 import CustomCursor from '@/components/CustomCursor'
 import { LightboxProvider } from '@/contexts/LightboxContext'
+import PageTransition from '@/components/PageTransition'
 import type { Navigation, Settings } from '@/types/sanity'
 
 // Google font (IBM Plex Sans) - downloaded & optimized at build time
@@ -107,19 +108,20 @@ export default async function RootLayout({
         className={`${ibmPlexSans.variable} ${playfair.variable} antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
-        <LightboxProvider>
-          {/* Header - conditional rendering: only show if data exists */}
-          {navigation && settings && (
-            <Header navigation={navigation} settings={settings} />
-          )}
+        <PageTransition>
+          <LightboxProvider>
+            {/* Header - conditional rendering: only show if data exists */}
+            {navigation && settings && (
+              <Header navigation={navigation} settings={settings} />
+            )}
 
-          {/**
-           * Main content area
-           * flex-1: Grows to fill available space, pushing footer to bottom
-           */}
-          <main className="flex-1">
-            {children}
-          </main>
+            {/**
+             * Main content area
+             * flex-1: Grows to fill available space, pushing footer to bottom
+             */}
+            <main className="flex-1">
+              {children}
+            </main>
 
           {/**
            * Footer - conditional rendering: only show if settings exist
@@ -135,7 +137,8 @@ export default async function RootLayout({
 
           {/* Custom Cursor - editorial enhancement for desktop */}
           <CustomCursor />
-        </LightboxProvider>
+          </LightboxProvider>
+        </PageTransition>
       </body>
     </html>
   );
