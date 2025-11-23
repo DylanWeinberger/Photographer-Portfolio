@@ -6,7 +6,6 @@ import { navigationQuery, settingsQuery } from '@/lib/queries'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Lightbox from '@/components/Lightbox'
-import CustomCursor from '@/components/CustomCursor'
 import { LightboxProvider } from '@/contexts/LightboxContext'
 import PageTransition from '@/components/PageTransition'
 import type { Navigation, Settings } from '@/types/sanity'
@@ -134,9 +133,6 @@ export default async function RootLayout({
 
           {/* Lightbox - renders when opened */}
           <Lightbox />
-
-          {/* Custom Cursor - editorial enhancement for desktop */}
-          <CustomCursor />
           </LightboxProvider>
         </PageTransition>
       </body>

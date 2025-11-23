@@ -30,6 +30,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/image'
 import type { Navigation, Settings, MenuItem } from '@/types/sanity'
+import TransitionLink from '@/components/TransitionLink'
+
 
 interface HeaderProps {
   navigation: Navigation
@@ -128,13 +130,13 @@ export default function Header({ navigation, settings }: HeaderProps) {
                     </a>
                   ) : (
                     // Internal link - use Next.js <Link>
-                    <Link
+                    <TransitionLink
                       href={getHref(item)}
                       className="nav-item"
                     >
                       {item.label}
                       <span></span>
-                    </Link>
+                    </TransitionLink>
                   )}
                 </li>
               ))}

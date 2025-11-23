@@ -130,50 +130,34 @@ export default function InfoPanel({ photo, isOpen, onClose }: InfoPanelProps) {
                     Collections
                   </h3>
                   <div className="flex flex-wrap gap-x-4 gap-y-2">
-                                        {photo.tags.map((tag) => {
-  // tag may be a dereferenced object or a reference { _ref }
-  const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
-  // Prefer explicit slug if available
-  const slug = (tag as any).slug
-    ?? (tag as any)._ref // fallback — may not be a friendly slug
+                    {photo.tags
+                      .map((tag) => {
+                        // tag may be a dereferenced object or a reference { _ref }
+                        const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
+                        // Prefer explicit slug if available
+                        const slug = (tag as any).slug ?? (tag as any)._ref
 
-  // if slug contains something like `tag-abc123` you might want to clean it:
-  const cleanedSlug = typeof slug === 'string'
-    ? slug.replace(/^tag[._-]?/, '') // optional sanitization — adjust to your _ref format
-    : undefined
+                        // if slug contains something like `tag-abc123` you might want to clean it:
+                        const cleanedSlug = typeof slug === 'string'
+                          ? slug.replace(/^tag[._-]?/, '')
+                          : undefined
 
-  const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
+                        const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
 
-  return (
-    <Link
-      key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
-      href={href}
-      onClick={() => {
-        closeLightbox();
-      }}
-      className="text-sm font-light opacity-70 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] underline underline-offset-4 decoration-[var(--border)] hover:decoration-[var(--foreground)]"
-    >
-      {tagName}
-    </Link>
-  )
-})}
+                        return (
+                          <Link
+                            key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
+                            href={href}
+                            onClick={() => {
+                              closeLightbox();
+                            }}
+                            className="text-sm font-light opacity-70 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] underline underline-offset-4 decoration-[var(--border)] hover:decoration-[var(--foreground)]"
+                          >
+                            {tagName}
+                          </Link>
+                        )
+                      })}
                   </div>
-                </div>
-              )}
-
-              {/* Featured Badge - Minimal, editorial */}
-              {photo.featured && (
-                <div className="pt-4 border-t border-[var(--border)]">
-                  <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-[var(--accent-warm)] font-light">
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    Featured
-                  </span>
                 </div>
               )}
             </div>
@@ -255,47 +239,31 @@ export default function InfoPanel({ photo, isOpen, onClose }: InfoPanelProps) {
                     Collections
                   </h3>
                   <div className="flex flex-wrap gap-x-4 gap-y-2">
-                      {photo.tags.map((tag) => {
-                      // tag may be a dereferenced object or a reference { _ref }
-                      const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
-                      // Prefer explicit slug if available
-                      const slug = (tag as any).slug?.current
-                        ?? (tag as any)._ref // fallback — may not be a friendly slug
+                    {photo.tags
+                      .map((tag) => {
+                        // tag may be a dereferenced object or a reference { _ref }
+                        const tagName = (tag as any).name ?? (tag as any)._ref ?? 'tag'
+                        // Prefer explicit slug if available
+                        const slug = (tag as any).slug?.current ?? (tag as any)._ref
 
-                      // if slug contains something like `tag-abc123` you might want to clean it:
-                      const cleanedSlug = typeof slug === 'string'
-                        ? slug.replace(/^tag[._-]?/, '') // optional sanitization — adjust to your _ref format
-                        : undefined
+                        // if slug contains something like `tag-abc123` you might want to clean it:
+                        const cleanedSlug = typeof slug === 'string'
+                          ? slug.replace(/^tag[._-]?/, '')
+                          : undefined
 
-                      const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
+                        const href = cleanedSlug ? `/tag/${cleanedSlug}` : `/tag/${encodeURIComponent(String(slug))}`
 
-                      return (
-                        <Link
-                          key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
-                          href={href}
-                          className="text-sm font-light opacity-70 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] underline underline-offset-4 decoration-[var(--border)] hover:decoration-[var(--foreground)]"
-                        >
-                          {tagName}
-                        </Link>
-                      )
-                    })}
+                        return (
+                          <Link
+                            key={(tag as any)._id ?? (tag as any)._ref ?? tagName}
+                            href={href}
+                            className="text-sm font-light opacity-70 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] underline underline-offset-4 decoration-[var(--border)] hover:decoration-[var(--foreground)]"
+                          >
+                            {tagName}
+                          </Link>
+                        )
+                      })}
                   </div>
-                </div>
-              )}
-
-              {/* Featured Badge - Minimal, editorial */}
-              {photo.featured && (
-                <div className="pt-4 border-t border-[var(--border)]">
-                  <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.15em] text-[var(--accent-warm)] font-light">
-                    <svg
-                      className="w-3 h-3"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    Featured
-                  </span>
                 </div>
               )}
             </div>

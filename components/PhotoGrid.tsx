@@ -1,30 +1,28 @@
 /**
  * PhotoGrid Component
  *
- * Fine art photography grid with generous spacing and subtle presentation.
+ * Fine art photography grid using justified rows layout.
  * Design philosophy:
- * - Larger gaps for breathing room
- * - 2 columns max for impact (not 3)
- * - Subtle borders on images
- * - Slow hover effects
- *
- * Supports two layouts:
- * - rows2: Clean 2-column grid with equal widths and heights
- * - masonry: True masonry layout where items pack naturally by height
+ * - Equal row heights with variable image widths
+ * - Images maintain natural aspect ratios
+ * - Generous spacing for breathing room
+ * - Subtle borders and slow hover effects
  */
 
 'use client'
 
+import { RowsPhotoAlbum } from 'react-photo-album'
+import 'react-photo-album/rows.css'
 import type { Photo } from '@/types/sanity'
 import ProtectedImage from './ProtectedImage'
 import { useLightbox } from '@/contexts/LightboxContext'
 
 interface PhotoGridProps {
   photos: Photo[]
-  layout?: 'rows2' | 'masonry'
+  targetRowHeight?: number
 }
 
-export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) {
+export default function PhotoGrid({ photos, targetRowHeight = 300 }: PhotoGridProps) {
   const { openLightbox } = useLightbox()
 
   // Handle empty state
@@ -56,49 +54,35 @@ export default function PhotoGrid({ photos, layout = 'rows2' }: PhotoGridProps) 
     )
   }
 
-  // Stagger delays for first 6 items only (gallery aesthetic - subtle entrance)
-  const getStaggerDelay = (index: number): string => {
-    const delays = ['', 'animate-delay-100', 'animate-delay-150', 'animate-delay-200', 'animate-delay-250', 'animate-delay-300']
-    return index < 6 ? delays[index] : ''
-  }
+  // Transform photos to react-photo-album format
+  const albumPhotos = photos.map((photo) => ({
+    src: photo.image.asset.url,
+    width: photo.image.asset.metadata.dimensions.width,
+    height: photo.image.asset.metadata.dimensions.height,
+    alt: photo.altText || photo.title,
+    // Store original photo data for custom rendering
+    photo,
+  }))
 
-  // Render based on layout type
-  if (layout === 'masonry') {
-    return (
-      <>
-        <div className="masonry-grid">
-          {photos.map((photo, index) => (
-            <div
-              key={photo._id}
-              className={`animate-fadeInUp ${getStaggerDelay(index)}`.trim()}
-            >
-              <ProtectedImage
-                photo={photo}
-                priority={index < 2}
-                onClick={() => openLightbox(photos, index)}
-              />
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  }
-
-  // Default: rows2 layout (2-column grid)
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
-      {photos.map((photo, index) => (
-        <div
-          key={photo._id}
-          className={`animate-fadeInUp ${getStaggerDelay(index)}`.trim()}
-        >
-          <ProtectedImage
-            photo={photo}
-            priority={index < 2}
-            onClick={() => openLightbox(photos, index)}
-          />
-        </div>
-      ))}
-    </div>
+    <RowsPhotoAlbum
+      photos={albumPhotos}
+      targetRowHeight={targetRowHeight}
+      rowConstraints={{ minPhotos: 1, maxPhotos: 4 }}
+      spacing={40}
+      render={{
+        image: (_props, { photo: albumPhoto }) => {
+          const originalPhoto = (albumPhoto as typeof albumPhotos[number]).photo
+          const index = photos.findIndex((p) => p._id === originalPhoto._id)
+          return (
+            <ProtectedImage
+              photo={originalPhoto}
+              priority={index < 4}
+              onClick={() => openLightbox(photos, index)}
+            />
+          )
+        },
+      }}
+    />
   )
 }

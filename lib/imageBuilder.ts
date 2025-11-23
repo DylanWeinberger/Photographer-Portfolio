@@ -1,5 +1,8 @@
 import { urlFor } from '@/sanity/lib/image'
-import type { SanityImage } from '@/types/sanity'
+import type { SanityImage, SanityImageExpanded } from '@/types/sanity'
+
+// Union type for both image formats
+type SanityImageSource = SanityImage | SanityImageExpanded
 
 /**
  * Image Builder Helpers for Sanity Images
@@ -30,13 +33,11 @@ const qualityMap = {
  * @returns Optimized image URL
  */
 export function getThumbnailUrl(
-  source: SanityImage,
+  source: SanityImageSource,
   quality: 'high' | 'medium' | 'low' = 'medium'
 ): string {
   return urlFor(source)
     .width(600)
-    .height(600)
-    .fit('crop')
     .quality(qualityMap[quality])
     .auto('format') // Automatically serve WebP/AVIF when supported
     .url() || ''
@@ -47,10 +48,9 @@ export function getThumbnailUrl(
  * @param source - Sanity image object
  * @returns Low quality blurred image URL for placeholder
  */
-export function getBlurDataURL(source: SanityImage): string {
+export function getBlurDataURL(source: SanityImageSource): string {
   return urlFor(source)
     .width(20)
-    .height(20)
     .quality(20)
     .blur(50)
     .url() || ''
@@ -64,7 +64,7 @@ export function getBlurDataURL(source: SanityImage): string {
  * @returns Optimized image URL
  */
 export function getFullImageUrl(
-  source: SanityImage,
+  source: SanityImageSource,
   quality: 'high' | 'medium' | 'low' = 'high',
   maxWidth: number = 2000
 ): string {
@@ -82,7 +82,7 @@ export function getFullImageUrl(
  * @returns Object with URLs for different viewport sizes
  */
 export function getResponsiveImageUrls(
-  source: SanityImage,
+  source: SanityImageSource,
   quality: 'high' | 'medium' | 'low' = 'medium'
 ) {
   return {

@@ -37,7 +37,21 @@ export const homepageQuery = groq`
       heroPhotos[]-> {
         _id,
         title,
-        image,
+        image {
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          },
+          hotspot,
+          crop
+        },
         altText,
         displayQuality,
         watermarkEnabled
@@ -75,7 +89,21 @@ export const featuredPhotosQuery = groq`
   *[_type == "photo" && featured == true] | order(_createdAt desc) [0...6] {
     _id,
     title,
-    image,
+    image {
+      asset-> {
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      hotspot,
+      crop
+    },
     altText,
     displayQuality,
     watermarkEnabled,
@@ -107,7 +135,21 @@ export const allPhotosQuery = groq`
     _type,
     _createdAt,
     title,
-    image,
+    image {
+      asset-> {
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      },
+      hotspot,
+      crop
+    },
     altText,
     caption,
     displayQuality,
@@ -192,7 +234,21 @@ export const paginatedPhotosQuery = groq`
       _type,
       _createdAt,
       title,
-      image,
+      image {
+        asset-> {
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        hotspot,
+        crop
+      },
       altText,
       caption,
       displayQuality,
@@ -227,7 +283,21 @@ export const paginatedTagPhotosQuery = groq`
       _type,
       _createdAt,
       title,
-      image,
+      image {
+        asset-> {
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        hotspot,
+        crop
+      },
       altText,
       caption,
       displayQuality,
@@ -290,7 +360,21 @@ export const tagBySlugQuery = groq`
       _type,
       _createdAt,
       title,
-      image,
+      image {
+        asset-> {
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        },
+        hotspot,
+        crop
+      },
       altText,
       caption,
       displayQuality,

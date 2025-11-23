@@ -11,15 +11,45 @@ export interface TagReference {
   _type: 'reference'
 }
 
-// Image asset type from Sanity
-export interface SanityImageAsset {
+// Image asset type from Sanity (reference form)
+export interface SanityImageAssetRef {
   _ref: string
   _type: 'reference'
 }
 
-// Image type with asset reference
+// Image asset type from Sanity (expanded/dereferenced form)
+export interface SanityImageAssetExpanded {
+  _id: string
+  url: string
+  metadata: {
+    dimensions: {
+      width: number
+      height: number
+      aspectRatio: number
+    }
+  }
+}
+
+// Image type with asset reference (for schemas/mutations)
 export interface SanityImage {
-  asset: SanityImageAsset
+  asset: SanityImageAssetRef
+  hotspot?: {
+    x: number
+    y: number
+    height: number
+    width: number
+  }
+  crop?: {
+    top: number
+    bottom: number
+    left: number
+    right: number
+  }
+}
+
+// Image type with expanded asset (for queries with dimensions)
+export interface SanityImageExpanded {
+  asset: SanityImageAssetExpanded
   hotspot?: {
     x: number
     y: number
@@ -40,7 +70,7 @@ export interface Photo {
   _type: 'photo'
   _createdAt: string
   title: string
-  image: SanityImage
+  image: SanityImageExpanded
   altText?: string // Optional, falls back to title
   caption?: string
   displayQuality: 'high' | 'medium' | 'low'

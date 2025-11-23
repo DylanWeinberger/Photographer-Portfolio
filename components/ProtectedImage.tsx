@@ -60,16 +60,16 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
   const hoverAnimation = isHoverDevice
     ? {
         scale: 1.01,
-        filter: 'brightness(1.25)',
-        boxShadow: '0 8px 30px rgba(250, 250, 250, 0.3)',
+        filter: 'brightness(1.15)',
+        boxShadow: '0 4px 8px rgba(255, 255, 255, 0.05)',
       }
     : undefined
 
   // Focus state (keyboard navigation - same as hover + visible ring)
   const focusAnimation = {
     scale: 1.01,
-    filter: 'brightness(1.25)',
-    boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8), 0 0 0 2px #d4c5b0',
+    filter: 'brightness(1.15)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.8), 0 0 0 2px #d4c5b0',
   }
 
   // Tap feedback for mobile (brief, subtle)
@@ -95,12 +95,12 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
         </div>
       )}
 
-      {/* Protected Image - Aspect ratio with subtle border */}
+      {/* Protected Image - Natural aspect ratio with subtle border */}
       <motion.div
         onContextMenu={handleContextMenu}
         onClick={onClick}
         data-cursor="image"
-        className={`relative aspect-[4/5] overflow-hidden image-border ${
+        className={`relative overflow-hidden image-border ${
           onClick ? 'cursor-pointer' : 'cursor-default'
         }`}
         whileHover={hoverAnimation}
@@ -124,9 +124,10 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
         <Image
           src={imageUrl}
           alt={altText}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover protected-image transition-all duration-[var(--transition-slow)] group-hover:brightness-105"
+          width={600}
+          height={0}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
+          className="w-full h-auto protected-image transition-all duration-[var(--transition-slow)] group-hover:brightness-105"
           placeholder="blur"
           blurDataURL={blurDataURL}
           priority={priority}
@@ -134,24 +135,8 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
         />
 
         {/* Very subtle overlay on hover */}
-        <div className="absolute inset-0 bg-[var(--background)]/0 group-hover:bg-[var(--background)]/5 transition-all duration-[var(--transition-slow)]" />
+        <div className="absolute inset-0 bg-[var(--background)]/0 group-hover:bg-[var(--background)]/5 transition-all duration-[var(--transition-slow)] pointer-events-none" />
       </motion.div>
-
-      {/* Photo Info - Minimal, refined */}
-      {(photo.title || photo.caption) && (
-        <div className="mt-4">
-          {photo.title && (
-            <h3 className="text-sm text-[var(--foreground)] font-normal mb-1 tracking-wide">
-              {photo.title}
-            </h3>
-          )}
-          {photo.caption && (
-            <p className="text-xs text-[var(--subtle-text)] line-clamp-2 leading-relaxed">
-              {photo.caption}
-            </p>
-          )}
-        </div>
-      )}
     </div>
   )
 }

@@ -170,12 +170,6 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   const startRange = (page - 1) * PHOTOS_PER_PAGE + 1
   const endRange = Math.min(page * PHOTOS_PER_PAGE, total)
 
-  // Normalize layout preference - convert old values to new format
-  const normalizedLayout =
-    tagData.layout && ['grid-3', 'grid-4'].includes(tagData.layout)
-      ? 'rows2'
-      : (tagData.layout || 'rows2')
-
   // Determine header and subheader text
   const headerText = tagData.headerText || tagData.displayName || tagData.name
   const subheaderText = tagData.subheader
@@ -198,6 +192,23 @@ export default async function TagPage({ params, searchParams }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
+            {/* Header Section - Generous spacing, editorial layout */}
+      <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
+        <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
+          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight animate-fadeInUp">
+            {headerText}
+          </h1>
+          <p className="mt-8 text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)]">
+            {total > 0 ? (
+              <>
+                {startRange}–{endRange} of {total} Photograph{total === 1 ? '' : 's'}
+              </>
+            ) : (
+              'Collection'
+            )}
+          </p>
+        </div>
+      </header>
       {/* Hero Image (if provided) - Full width, subtle presentation */}
       {tagData.heroImage && (
         <div className="w-full pt-20 md:pt-24">
@@ -213,39 +224,11 @@ export default async function TagPage({ params, searchParams }: PageProps) {
         </div>
       )}
 
-      {/* Header Section - Generous spacing, editorial layout */}
-      <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
-        <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
-          <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight animate-fadeInUp">
-            {headerText}
-          </h1>
-          {subheaderText && (
-            <p className="text-lg md:text-xl text-[var(--foreground)] opacity-80 mb-6 md:mb-8 max-w-3xl mx-auto font-light tracking-wide">
-              {subheaderText}
-            </p>
-          )}
-          {tagData.description && (
-            <p className="text-base md:text-lg text-[var(--foreground)] opacity-70 max-w-2xl mx-auto leading-relaxed">
-              {tagData.description}
-            </p>
-          )}
-          <p className="mt-8 text-sm uppercase tracking-[0.15em] text-[var(--subtle-text)]">
-            {total > 0 ? (
-              <>
-                {startRange}–{endRange} of {total} Photograph{total === 1 ? '' : 's'}
-              </>
-            ) : (
-              'Collection'
-            )}
-          </p>
-        </div>
-      </header>
-
       {/* Photos Grid - Generous spacing */}
       <main className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 py-20 md:py-28 lg:py-32">
         {photos.length > 0 ? (
           <>
-            <PhotoGrid photos={photos} layout={normalizedLayout as 'rows2' | 'masonry'} />
+            <PhotoGrid photos={photos} />
             <Pagination
               currentPage={page}
               totalPages={totalPages}
