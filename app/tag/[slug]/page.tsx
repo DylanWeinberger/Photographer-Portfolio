@@ -16,7 +16,7 @@ import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib
  * - Optional hero image
  * - Paginated photos tagged with this tag
  * - Dark theme styling
- * - Custom layout (rows2 or masonry)
+
  *
  * This approach combines tag-based organization with page-like customization.
  */

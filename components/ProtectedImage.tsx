@@ -119,15 +119,17 @@ export default function ProtectedImage({ photo, priority = false, onClick }: Pro
         style={{
           transformOrigin: 'center',
           outline: 'none', // Custom focus style via whileFocus
+          // Use aspect ratio from image metadata for proper sizing
+          aspectRatio: photo.image.asset.metadata.dimensions.aspectRatio,
         }}
       >
         <Image
           src={imageUrl}
           alt={altText}
-          width={600}
-          height={0}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 400px"
-          className="w-full h-auto protected-image transition-all duration-[var(--transition-slow)] group-hover:brightness-105"
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          quality={75}
+          className="object-cover protected-image transition-all duration-[var(--transition-slow)] group-hover:brightness-105"
           placeholder="blur"
           blurDataURL={blurDataURL}
           priority={priority}

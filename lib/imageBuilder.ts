@@ -27,20 +27,17 @@ const qualityMap = {
 } as const
 
 /**
- * Generate optimized thumbnail URL for grid views
+ * Generate base image URL for grid views
+ * Returns URL without width constraints so Next.js Image can handle responsive sizing
  * @param source - Sanity image object
- * @param quality - Quality level from photo settings
- * @returns Optimized image URL
+ * @returns Base image URL for Next.js optimization
  */
 export function getThumbnailUrl(
   source: SanityImageSource,
-  quality: 'high' | 'medium' | 'low' = 'medium'
+  _quality: 'high' | 'medium' | 'low' = 'medium'
 ): string {
-  return urlFor(source)
-    .width(600)
-    .quality(qualityMap[quality])
-    .auto('format') // Automatically serve WebP/AVIF when supported
-    .url() || ''
+  // Return base URL without width/quality - let Next.js handle optimization via sizes prop
+  return urlFor(source).url() || ''
 }
 
 /**

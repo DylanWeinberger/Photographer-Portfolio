@@ -171,20 +171,31 @@ export const allPhotosQuery = groq`
  * - *[_type == "navigation"] - Find all navigation documents
  * - [0] - Get first one (navigation is a singleton, only one exists)
  * - menuItems[] - Get the array of menu items
+ * - children[] - Get nested child items for parent menu items
  *
  * Returns: Navigation data with menu items including:
  * - Label and link type
  * - Internal/external link values
  * - New tab preference
+ * - Children (for parent items with dropdowns)
  */
 export const navigationQuery = groq`
   *[_type == "navigation"][0] {
     menuItems[] {
+      _key,
       label,
       linkType,
       internalLink,
       externalUrl,
-      openInNewTab
+      openInNewTab,
+      children[] {
+        _key,
+        label,
+        linkType,
+        internalLink,
+        externalUrl,
+        openInNewTab
+      }
     }
   }
 `
@@ -351,8 +362,6 @@ export const tagBySlugQuery = groq`
       displayQuality,
       watermarkEnabled
     },
-    layout,
-    colorScheme,
     showInNav,
     navOrder,
     "photos": *[_type == "photo" && references(^._id)] | order(_createdAt desc) {

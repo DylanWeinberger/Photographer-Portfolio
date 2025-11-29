@@ -81,24 +81,6 @@ export interface Photo {
   location?: string
 }
 
-/**
- * Color Scheme Types
- *
- * Types for tag page color customization.
- * Supports presets (light/dark/warm/cool) and custom colors.
- */
-export interface ColorScheme {
-  preset: 'light' | 'dark' | 'warm' | 'cool' | 'custom'
-  backgroundColor?: {
-    hex: string
-  }
-  textColor?: {
-    hex: string
-  }
-  accentColor?: {
-    hex: string
-  }
-}
 
 /**
  * Tag Document Type
@@ -124,9 +106,6 @@ export interface Tag {
   subheader?: string
   description?: string
   heroImage?: Photo
-  // Layout and styling (optional)
-  layout?: 'grid-3' | 'grid-4' | 'masonry'
-  colorScheme?: ColorScheme
 }
 
 /**
@@ -201,14 +180,25 @@ export interface Navigation {
   menuItems: MenuItem[]
 }
 
-// Individual menu item in navigation
-export interface MenuItem {
+// Child menu item in navigation dropdown
+export interface ChildMenuItem {
   _key: string
   label: string
   linkType: 'home' | 'internal' | 'external'
   internalLink?: string
   externalUrl?: string
   openInNewTab?: boolean
+}
+
+// Individual menu item in navigation
+export interface MenuItem {
+  _key: string
+  label: string
+  linkType: 'home' | 'internal' | 'external' | 'parent'
+  internalLink?: string
+  externalUrl?: string
+  openInNewTab?: boolean
+  children?: ChildMenuItem[]
 }
 
 /**

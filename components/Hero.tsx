@@ -34,7 +34,7 @@ export default function Hero({ hero }: HeroProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     {
       loop: true,
-      duration: 150, // SLOW 1.5s crossfade
+      duration: 90,
     },
     [
       Fade(), // Crossfade effect, not slide
@@ -72,19 +72,9 @@ export default function Hero({ hero }: HeroProps) {
       <div ref={emblaRef} className="h-full">
         <div className="flex h-full">
           {hero.heroPhotos.map((photo, index) => {
-            // Image optimization:
-            // - width: 2400px for exceptional hero quality
-            // - quality: 90 (hero images demand highest quality)
-            // - auto('format'): enables WebP/AVIF for modern browsers
-            // - priority: only first image (critical for LCP)
-            // - loading='eager': prevents lazy-loading of first image (LCP optimization)
-            // - fetchPriority='high': browser prioritizes first image download (LCP optimization)
-            // - sizes: 100vw (hero is full width on all devices)
-            const imageUrl = urlFor(photo.image)
-              .width(2400)
-              .quality(90)
-              .auto('format')
-              .url()
+            // Get base Sanity URL - Next.js will handle optimization via its image pipeline
+            // The sizes prop tells browsers what width to request at each breakpoint
+            const imageUrl = urlFor(photo.image).url()
 
             return (
               <div key={photo._id} className="relative flex-[0_0_100%] min-w-0">
@@ -92,10 +82,11 @@ export default function Hero({ hero }: HeroProps) {
                   src={imageUrl}
                   alt={photo.altText || photo.title}
                   fill
-                  priority={index === 0} // Only prioritize first image for LCP
-                  loading={index === 0 ? 'eager' : 'lazy'} // LCP optimization: eager load first image
-                  fetchPriority={index === 0 ? 'high' : 'auto'} // LCP optimization: high priority for first image
+                  priority={index === 0}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
                   className="object-cover animate-image-fade-in"
+                  quality={75}
                   sizes="100vw"
                 />
               </div>

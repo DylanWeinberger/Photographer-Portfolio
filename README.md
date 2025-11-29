@@ -57,7 +57,6 @@ photographer-portfolio/
 │   ├── PhotoGrid.tsx        # Responsive grid layout
 │   └── ProtectedImage.tsx   # Image with right-click protection
 ├── lib/                     # Utility functions
-│   ├── colorSchemes.ts      # Tag color theme system
 │   ├── imageBuilder.ts      # Sanity image URL helpers
 │   ├── queries.ts           # GROQ queries
 │   └── rateLimit.ts         # Contact form rate limiting
