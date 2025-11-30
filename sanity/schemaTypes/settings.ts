@@ -22,12 +22,8 @@ export const settingsType = defineType({
   type: 'document',
   icon: CogIcon,
 
-  // Singleton: Only one settings document can exist
-  // This ensures consistent site-wide configuration
-  options: {
-    // @ts-ignore - singleton option added by sanity-plugin-singleton-tools
-    singleton: true,
-  },
+  // Singleton: Only one settings document should exist
+  // Enforced by the structure configuration in sanity/structure.ts
 
   fields: [
     // SITE TITLE

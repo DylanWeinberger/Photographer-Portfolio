@@ -14,12 +14,8 @@ export const homepageType = defineType({
   type: 'document',
   icon: HomeIcon,
 
-  // Singleton: Only one homepage document can exist
-  // Enforced by sanity-plugin-singleton-tools
-  options: {
-    // @ts-ignore - singleton option added by sanity-plugin-singleton-tools
-    singleton: true,
-  },
+  // Singleton: Only one homepage document should exist
+  // Enforced by the structure configuration in sanity/structure.ts
 
   fields: [
     // HERO SECTION

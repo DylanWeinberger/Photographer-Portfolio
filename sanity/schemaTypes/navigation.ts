@@ -19,12 +19,8 @@ export const navigationType = defineType({
   type: 'document',
   icon: LinkIcon,
 
-  // Singleton: Only one navigation document can exist
-  // This ensures consistent site-wide navigation
-  options: {
-    // @ts-ignore - singleton option added by sanity-plugin-singleton-tools
-    singleton: true,
-  },
+  // Singleton: Only one navigation document should exist
+  // Enforced by the structure configuration in sanity/structure.ts
 
   fields: [
     defineField({
