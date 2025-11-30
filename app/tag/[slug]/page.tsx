@@ -211,7 +211,7 @@ export default async function TagPage({ params, searchParams }: PageProps) {
       </header>
       {/* Hero Image (if provided) - Full width, subtle presentation */}
       {tagData.heroImage && (
-        <div className="w-full pt-20 md:pt-24">
+        <div className="w-full pt-20 md:pt-24 hidden md:block">
           <div className="max-w-[1800px] mx-auto px-6 md:px-20 lg:px-24">
             <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden image-border">
               <img
