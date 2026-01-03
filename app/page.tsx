@@ -5,8 +5,8 @@ import type { Homepage, Photo } from '@/types/sanity'
 import Hero from '@/components/Hero'
 import FeaturedSection from '@/components/FeaturedSection'
 import PhotoGrid from '@/components/PhotoGrid'
-import About from '@/components/About'
 import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib/metadata'
+import JsonLd from '@/components/JsonLd'
 
 /**
  * Fetch homepage data from Sanity
@@ -70,12 +70,7 @@ export default async function Home() {
   return (
     <>
       {/* JSON-LD Structured Data for SEO */}
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      {jsonLd && <JsonLd data={jsonLd} />}
 
       {/* Hero Section - Full width, edge-to-edge, dramatic */}
       <Hero hero={homepage.hero} />
@@ -89,9 +84,6 @@ export default async function Home() {
           <PhotoGrid photos={featuredPhotos} />
         </div>
       </section>
-
-      {/* About Section - Full width with subtle background */}
-      <About about={homepage.about} />
     </>
   )
 }

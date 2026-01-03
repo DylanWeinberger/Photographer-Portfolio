@@ -25,7 +25,6 @@ import { groq } from 'next-sanity'
  * Returns: Complete homepage data including:
  * - Hero section (headline, subheadline, photos, CTA)
  * - Featured section (heading, description)
- * - About section (heading, bio, profile image)
  */
 export const homepageQuery = groq`
   *[_type == "homepage"][0] {
@@ -63,11 +62,6 @@ export const homepageQuery = groq`
     featuredSection {
       heading,
       description
-    },
-    about {
-      heading,
-      bio,
-      profileImage
     }
   }
 `
@@ -203,8 +197,8 @@ export const navigationQuery = groq`
 /**
  * SETTINGS QUERY
  *
- * Fetches site-wide settings including logo, title, and social links.
- * Used in header and footer components.
+ * Fetches site-wide settings including logo, title, social links, and about content.
+ * Used in header, footer, and about page components.
  *
  * Query breakdown:
  * - *[_type == "settings"] - Find all settings documents
@@ -214,6 +208,7 @@ export const navigationQuery = groq`
  * - Site title and description
  * - Logo image reference
  * - Social media links
+ * - About section (heading, bio, profile image)
  * - Footer configuration
  */
 export const settingsQuery = groq`
@@ -222,6 +217,7 @@ export const settingsQuery = groq`
     siteDescription,
     logo,
     socialLinks,
+    about,
     footer
   }
 `

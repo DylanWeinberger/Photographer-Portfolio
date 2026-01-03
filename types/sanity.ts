@@ -158,13 +158,6 @@ export interface Homepage {
     heading: string
     description?: string
   }
-
-  // About section - Information about the photographer
-  about: {
-    heading: string
-    bio: Block[] // Rich text content using Portable Text format
-    profileImage: SanityImage
-  }
 }
 
 /**
@@ -205,7 +198,7 @@ export interface MenuItem {
  * Settings Document Type
  *
  * Singleton document that contains site-wide configuration.
- * Includes branding, social links, and footer settings.
+ * Includes branding, social links, about section, and footer settings.
  */
 export interface Settings {
   _id: string
@@ -218,6 +211,11 @@ export interface Settings {
   socialLinks?: {
     flickr?: string
     email?: string
+  }
+  about?: {
+    heading: string
+    bio: Block[] // Rich text content using Portable Text format
+    profileImage: SanityImage
   }
   footer?: {
     copyrightText?: string

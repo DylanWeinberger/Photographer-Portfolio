@@ -19,7 +19,7 @@ type FeaturedSectionProps = {
 
 export default function FeaturedSection({ featuredSection }: FeaturedSectionProps) {
   return (
-    <section className="py-24 md:py-32 lg:py-40 px-6 md:px-20 lg:px-24">
+    <section className="py-16 md:py-20 px-6 md:px-20 lg:px-24">
       <div className="max-w-4xl mx-auto text-center">
         {/* Heading - Large Playfair Display with fade in + rise animation */}
         <AnimateOnScroll animation="fadeInUp">

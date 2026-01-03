@@ -7,6 +7,7 @@ import type { Tag, Photo } from '@/types/sanity'
 import PhotoGrid from '@/components/PhotoGrid'
 import Pagination from '@/components/Pagination'
 import { createMetadata, getOGImageUrl, generateImageGalleryJsonLd } from '@/lib/metadata'
+import JsonLd from '@/components/JsonLd'
 
 /**
  * TAG PAGE - Dynamic Route with Pagination
@@ -163,6 +164,11 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   // Fetch paginated photos
   const { photos, total } = await getPaginatedTagPhotos(slug, page)
 
+  // Filter out hero image from the grid if it exists
+  const filteredPhotos = tagData.heroImage
+    ? photos.filter(photo => photo._id !== tagData.heroImage?._id)
+    : photos
+
   // Calculate total pages
   const totalPages = Math.ceil(total / PHOTOS_PER_PAGE)
 
@@ -186,14 +192,9 @@ export default async function TagPage({ params, searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* JSON-LD Structured Data for SEO */}
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      {jsonLd && <JsonLd data={jsonLd} />}
             {/* Header Section - Generous spacing, editorial layout */}
-      <header className="border-b border-[var(--border)] pt-28 md:pt-36 lg:pt-40 pb-16 md:pb-20">
+      <header className="border-b border-[var(--border)] pt-8 md:pt-16 pb-16 md:pb-20">
         <div className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 text-center">
           <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-normal text-[var(--foreground)] mb-6 md:mb-8 tracking-tight animate-fadeInUp">
             {headerText}
@@ -226,9 +227,9 @@ export default async function TagPage({ params, searchParams }: PageProps) {
 
       {/* Photos Grid - Generous spacing */}
       <main className="max-w-[1600px] mx-auto px-6 md:px-20 lg:px-24 py-20 md:py-28 lg:py-32">
-        {photos.length > 0 ? (
+        {filteredPhotos.length > 0 ? (
           <>
-            <PhotoGrid photos={photos} />
+            <PhotoGrid photos={filteredPhotos} />
             <Pagination
               currentPage={page}
               totalPages={totalPages}

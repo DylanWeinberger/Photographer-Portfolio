@@ -4,20 +4,16 @@ import { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLightbox } from '@/contexts/LightboxContext'
 import { urlFor } from '@/sanity/lib/image'
-import InfoPanel from './InfoPanel'
+
 
 export default function Lightbox() {
   const { isOpen, photos, currentIndex, closeLightbox, nextPhoto, prevPhoto } =
     useLightbox()
   const [imageLoaded, setImageLoaded] = useState(false)
-  const [showInfo, setShowInfo] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   const currentPhoto = photos[currentIndex]
-
-  // Toggle info panel
-  const toggleInfo = () => setShowInfo((prev) => !prev)
 
   // Detect reduced motion preference
   useEffect(() => {
@@ -44,12 +40,7 @@ export default function Lightbox() {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'Escape':
-          // Close info panel first if open, then close lightbox
-          if (showInfo) {
-            setShowInfo(false)
-          } else {
-            closeLightbox()
-          }
+          closeLightbox()
           break
         case 'ArrowRight':
           e.preventDefault()
@@ -59,30 +50,17 @@ export default function Lightbox() {
           e.preventDefault()
           prevPhoto()
           break
-        case 'i':
-        case 'I':
-          // Toggle info with 'I' key
-          toggleInfo()
-          break
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, showInfo, closeLightbox, nextPhoto, prevPhoto])
+  }, [isOpen, closeLightbox, nextPhoto, prevPhoto])
 
   // Reset states when photo changes
   useEffect(() => {
     setImageLoaded(false)
-    // Keep info panel open if user had it open
   }, [currentIndex])
-
-  // Reset info panel when lightbox closes
-  useEffect(() => {
-    if (!isOpen) {
-      setShowInfo(false)
-    }
-  }, [isOpen])
 
   if (!isOpen || !currentPhoto) return null
 
@@ -138,56 +116,27 @@ export default function Lightbox() {
               {currentIndex + 1} / {photos.length}
             </div>
 
-            {/* Right Controls */}
-            <div className="flex items-center gap-2 md:gap-3">
-              {/* Info Button - Minimal, editorial */}
-              <button
-                onClick={toggleInfo}
-                className={`p-2.5 md:p-3 transition-all duration-[var(--transition-medium)] ${
-                  showInfo
-                    ? 'text-[var(--foreground)] opacity-100'
-                    : 'text-[var(--foreground)] opacity-50 hover:opacity-100'
-                }`}
-                aria-label="Toggle photo information"
-                aria-pressed={showInfo}
+            {/* Close Button - Minimal, editorial */}
+            <button
+              ref={closeButtonRef}
+              onClick={closeLightbox}
+              className="text-[var(--foreground)] opacity-50 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] p-2.5 md:p-3"
+              aria-label="Close lightbox (press Escape)"
+            >
+              <svg
+                className="w-6 h-6 md:w-7 md:h-7"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
               >
-                <svg
-                  className="w-5 h-5 md:w-6 md:h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </button>
-
-              {/* Close Button - Minimal, editorial */}
-              <button
-                ref={closeButtonRef}
-                onClick={closeLightbox}
-                className="text-[var(--foreground)] opacity-50 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] p-2.5 md:p-3"
-                aria-label="Close lightbox (press Escape)"
-              >
-                <svg
-                  className="w-6 h-6 md:w-7 md:h-7"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
 
           {/* Main Photo Container - Slow, dramatic transitions */}
@@ -197,27 +146,22 @@ export default function Lightbox() {
             animate={{
               opacity: 1,
               scale: 1,
-              marginRight: showInfo ? '20rem' : '0', // 320px = 20rem (sidebar width on desktop)
             }}
             exit={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.98 }}
             transition={{
               duration: photoDuration,
               ease: [0.4, 0, 0.2, 1] // Custom easing for contemplative pace
             }}
-            className="relative w-full h-full flex items-center justify-center p-4 md:p-12"
+            className="relative w-full h-full flex items-center justify-center p-4 md:p-12 lightbox-img-container"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative max-w-full max-h-full">
               <img
                 src={imageUrl}
                 alt={currentPhoto.altText || currentPhoto.title}
-                className={`object-contain select-none transition-all duration-300 ${
-                  showInfo
-                    ? 'max-h-[70vh] md:max-h-[85vh]'
-                    : 'max-h-[70vh] md:max-h-[85vh]'
-                }`}
+                className="object-contain select-none transition-all duration-300 max-h-[55vh] md:max-h-[85vh] lightbox-img mx-auto"
                 style={{
-                  maxWidth: showInfo ? 'calc(100vw - 24rem)' : '100vw',
+                  maxWidth: 'calc(100vw - 24rem)',
                 }}
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
@@ -228,27 +172,42 @@ export default function Lightbox() {
                   <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
                 </div>
               )}
+              {/* Title - Playfair Display for editorial feel */}
+              <div>
+                <h2 className="font-playfair text-3xl lg:text-4xl font-normal leading-tight tracking-tight mt-5">
+                  {currentPhoto.title || 'Untitled'}
+                </h2>
+              </div>
+
+              {/* Caption - Refined typography */}
+              {currentPhoto.caption && (
+                <div>
+                  <p className="text-base lg:text-lg font-light leading-relaxed opacity-80">
+                    {currentPhoto.caption}
+                  </p>
+                </div>
+              )}
             </div>
           </motion.div>
 
-          {/* Navigation Controls */}
+          {/* Navigation Controls - Highly visible */}
           {photos.length > 1 && (
             <>
-              {/* Previous Button - Almost invisible, minimal */}
+              {/* Previous Button - Large and visible */}
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   prevPhoto()
                 }}
-                className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-50 text-[var(--foreground)] opacity-40 hover:opacity-100 transition-opacity duration-[var(--transition-medium)] p-2 md:p-3"
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-[60] text-[var(--foreground)] opacity-80 hover:opacity-100 transition-all duration-[var(--transition-medium)] p-3 md:p-4 bg-black/40 hover:bg-black/60 rounded-full backdrop-blur-sm"
                 aria-label="Previous photo"
               >
                 <svg
-                  className="w-7 h-7 md:w-9 md:h-9"
+                  className="w-8 h-8 md:w-10 md:h-10"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                 >
                   <path
                     strokeLinecap="round"
@@ -258,25 +217,21 @@ export default function Lightbox() {
                 </svg>
               </button>
 
-              {/* Next Button - Almost invisible, minimal, adjusts position when info panel is open */}
+              {/* Next Button - Large, visible */}
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   nextPhoto()
                 }}
-                className="absolute top-1/2 -translate-y-1/2 z-50 text-[var(--foreground)] opacity-40 hover:opacity-100 transition-all duration-[var(--transition-medium)] p-2 md:p-3"
-                style={{
-                  right: showInfo ? 'calc(20rem + 1.5rem)' : '0.5rem',
-                  transition: 'right 0.6s ease-out',
-                }}
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-[60] text-[var(--foreground)] opacity-80 hover:opacity-100 transition-all duration-[var(--transition-medium)] p-3 md:p-4 bg-black/40 hover:bg-black/60 rounded-full backdrop-blur-sm lighthouse-next-btn"
                 aria-label="Next photo"
               >
                 <svg
-                  className="w-7 h-7 md:w-9 md:h-9"
+                  className="w-8 h-8 md:w-10 md:h-10"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2}
                 >
                   <path
                     strokeLinecap="round"
@@ -295,8 +250,6 @@ export default function Lightbox() {
             </div>
           )}
 
-          {/* Info Panel */}
-          <InfoPanel photo={currentPhoto} isOpen={showInfo} onClose={toggleInfo} />
         </motion.div>
       )}
     </AnimatePresence>

@@ -145,69 +145,6 @@ export const homepageType = defineType({
         }),
       ],
     }),
-
-    // ABOUT SECTION
-    defineField({
-      name: 'about',
-      title: 'About Section',
-      type: 'object',
-      description: 'Information about the photographer',
-      options: {
-        collapsible: true,
-        collapsed: false,
-      },
-      fields: [
-        defineField({
-          name: 'heading',
-          title: 'Section Heading',
-          type: 'string',
-          initialValue: 'About',
-          validation: (Rule) => 
-            Rule.required()
-              .min(2)
-              .max(200)
-              .error('Heading must be between 2 and 50 characters'),
-          description: 'Heading for the about section',
-        }),
-        defineField({
-          name: 'bio',
-          title: 'Biography',
-          type: 'array',
-          of: [
-            {
-              type: 'block',
-              styles: [
-                { title: 'Normal', value: 'normal' },
-                { title: 'Heading 3', value: 'h3' },
-              ],
-              marks: {
-                decorators: [
-                  { title: 'Strong', value: 'strong' },
-                  { title: 'Emphasis', value: 'em' },
-                ],
-              },
-            },
-          ],
-          validation: (Rule) => 
-            Rule.required()
-              .error('Biography is required'),
-          description: 'Photographer bio - supports basic formatting',
-        }),
-        defineField({
-          name: 'profileImage',
-          title: 'Profile Photo',
-          type: 'image',
-          options: { 
-            hotspot: true,
-            metadata: ['blurhash', 'lqip']
-          },
-          validation: (Rule) => 
-            Rule.required()
-              .error('Profile photo is required'),
-          description: 'Photo of the photographer',
-        }),
-      ],
-    }),
   ],
 
   preview: {

@@ -478,3 +478,19 @@ a:hover {
 .image-hover:hover {
   filter: brightness(1.05);
 }
+
+.lightbox-img-container:hover .image-hover {
+  transform: scale(1.02);
+}
+
+@media all and (max-width: 768px) {
+.lightbox-img-container {
+  margin-right: 0px !important;
+}
+.lightbox-img {
+  max-width: 100% !important;
+}
+.lighthouse-next-btn {
+  right: 1rem !important;
+}
+}

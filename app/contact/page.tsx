@@ -4,6 +4,7 @@ import { client } from '@/sanity/lib/client'
 import { settingsQuery } from '@/lib/queries'
 import type { Settings } from '@/types/sanity'
 import { createMetadata } from '@/lib/metadata'
+import JsonLd from '@/components/JsonLd'
 
 /**
  * Generate metadata for contact page
@@ -47,18 +48,18 @@ export default async function ContactPage() {
   const settings = await getSettings()
 
   // Generate JSON-LD structured data for contact page
+  // Note: Email omitted to prevent scraping by bots
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
     name: 'Contact',
-    description: 'Contact page for photography inquiries and commissions',
+    description: settings?.siteDescription || 'Contact page for photography inquiries and commissions',
     mainEntity: {
       '@type': 'Person',
       name: settings?.siteTitle || 'Henry Jaffe Photography',
       jobTitle: 'Photographer',
-      ...(settings?.socialLinks?.email && {
-        email: settings.socialLinks.email,
-      }),
+      url: process.env.NEXT_PUBLIC_SITE_URL,
+      // Use ContactPoint instead of exposing email directly
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'Customer Service',
@@ -68,12 +69,9 @@ export default async function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] pt-28 md:pt-36 lg:pt-40 pb-20 md:pb-28 lg:pb-32 px-6 md:px-20 lg:px-24">
+    <div className="min-h-screen bg-[var(--background)] pt-8 md:pt-16 pb-20 md:pb-28 lg:pb-32 px-6 md:px-20 lg:px-24">
       {/* JSON-LD Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       <div className="max-w-4xl mx-auto">
         {/* Page Header - Minimal, elegant */}
         <div className="text-center mb-16 md:mb-20">
